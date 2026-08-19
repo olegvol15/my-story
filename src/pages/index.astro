@@ -1,0 +1,73 @@
+---
+import "../styles/global.css";
+import { profile, timeline, projects } from "../data/content";
+
+const title = `${profile.name} — ${profile.tagline}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={profile.intro} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={profile.intro} />
+    <meta property="og:type" content="website" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <h1>{profile.name}</h1>
+        <p class="role">
+          {profile.tagline}<span class="dot">·</span>{profile.location}
+        </p>
+        <p class="intro">{profile.intro}</p>
+        <ul class="links">
+          {profile.links.map((link) => (
+            <li><a href={link.href} rel="me noopener" target="_blank">{link.label}</a></li>
+          ))}
+          <li><a href={`mailto:${profile.email}`}>Email</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h2>Timeline</h2>
+        <ol class="timeline">
+          {timeline.map((item) => (
+            <li>
+              <span class="date">{item.date}</span>
+              <h3>{item.title}</h3>
+              <p class="detail">{item.detail}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section>
+        <h2>Projects</h2>
+        <div class="cards">
+          {projects.map((project) => (
+            <article class="card">
+              <h3>{project.name}</h3>
+              <p>{project.blurb}</p>
+              <p class="stack">{project.stack}</p>
+              <p class="hard">{project.hard}</p>
+              <a href={project.href} rel="noopener" target="_blank">View the code</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Open to frontend roles. Reach me at
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

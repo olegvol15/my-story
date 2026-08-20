@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import "../styles/global.css";
 import { profile } from "../data/content";
 import WritingCard from "../components/WritingCard.astro";
+import SocialIcon from "../components/SocialIcon.astro";
 import Particles from "../components/Particles.astro";
 
 const title = `${profile.name} - a 20 year old software engineer from Ukraine building stuff and writing about it`;
@@ -52,7 +53,17 @@ const emphasise = (s: string) =>
 
       <ul class="links">
         {profile.links.map((link) => (
-          <li><a href={link.href} rel="me noopener" target="_blank">{link.label}</a></li>
+          <li>
+            <a
+              class="social"
+              href={link.href}
+              aria-label={link.label}
+              rel="me noopener"
+              target="_blank"
+            >
+              <SocialIcon name={link.icon} />
+            </a>
+          </li>
         ))}
         <li>
           <a id="copy-email" href={`mailto:${profile.email}`} data-email={profile.email}>

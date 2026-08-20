@@ -26,14 +26,14 @@ export const profile = {
     "Have an ambitious goal of becoming fully self-made solopreneur",
   ],
   links: [
-    { label: "GitHub", href: "https://github.com/olegvol15" },
-    { label: "LinkedIn", href: "https://linkedin.com/in/oleh-volostnykh" },
-    { label: "Twitter/X", href: "https://x.com/olegvolo15" },
-    { label: "Instagram", href: "https://www.instagram.com/_volostnykh15_/" },
-    {
-      label: "TikTok",
-      href: "https://www.tiktok.com/@oleeg15?_r=1&_t=ZS-992z1Psn1N4",
-    },
+    { label: "GitHub", icon: "github", href: "https://github.com/olegvol15" },
+    { label: "LinkedIn", icon: "linkedin", href: "https://linkedin.com/in/oleh-volostnykh" },
+    { label: "X", icon: "x", href: "https://x.com/olegvolo15" },
+    { label: "Instagram", icon: "instagram", href: "https://www.instagram.com/_volostnykh15_/" },
+    { label: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@oleeg15?_r=1&_t=ZS-992z1Psn1N4" },
+    { label: "Medium", icon: "medium", href: "https://medium.com/@olehvolostnykh15" },
+    { label: "dev.to", icon: "devdotto", href: "https://dev.to/olehvolos" },
+    { label: "Substack", icon: "substack", href: "https://substack.com/@olehvolostnykh" },
   ],
 };
 

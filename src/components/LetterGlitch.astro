@@ -1,0 +1,208 @@
+---
+interface Props {
+  glitchColors?: string[];
+  glitchSpeed?: number;
+  characters?: string;
+  fontSize?: number;
+  smooth?: boolean;
+}
+
+const {
+  glitchColors = ["#005b96", "#03396c", "#011f4b"],
+  glitchSpeed = 60,
+  characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789",
+  fontSize = 16,
+  smooth = true,
+} = Astro.props;
+---
+
+<canvas
+  id="letter-glitch"
+  aria-hidden="true"
+  data-colors={JSON.stringify(glitchColors)}
+  data-speed={glitchSpeed}
+  data-characters={characters}
+  data-font-size={fontSize}
+  data-smooth={String(smooth)}></canvas>
+<div class="glitch-scrim" aria-hidden="true"></div>
+
+<script>
+  const canvas = document.getElementById("letter-glitch") as HTMLCanvasElement | null;
+  if (canvas) {
+    const ctx = canvas.getContext("2d", { alpha: false });
+    const colors: string[] = JSON.parse(canvas.dataset.colors || "[]");
+    const glitchSpeed = Number(canvas.dataset.speed) || 60;
+    const characters = (canvas.dataset.characters || "").split("");
+    const fontSize = Number(canvas.dataset.fontSize) || 16;
+    const smooth = canvas.dataset.smooth === "true";
+
+    const charWidth = 10;
+    const charHeight = 20;
+
+    type Letter = {
+      char: string;
+      color: string;
+      target: [number, number, number];
+      current: [number, number, number];
+      progress: number;
+    };
+
+    let letters: Letter[] = [];
+    let columns = 0;
+    let rows = 0;
+    let frame = 0;
+    let last = 0;
+    let running = false;
+
+    const hexToRgb = (hex: string): [number, number, number] => {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return m
+        ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)]
+        : [0, 0, 0];
+    };
+
+    const rgbStr = (c: [number, number, number]) =>
+      `rgb(${Math.round(c[0])},${Math.round(c[1])},${Math.round(c[2])})`;
+
+    const randomChar = () =>
+      characters[Math.floor(Math.random() * characters.length)] || "0";
+
+    const randomColor = () =>
+      colors[Math.floor(Math.random() * colors.length)] || "#000000";
+
+    const makeLetters = () => {
+      letters = new Array(columns * rows).fill(null).map(() => {
+        const rgb = hexToRgb(randomColor());
+        return {
+          char: randomChar(),
+          color: rgbStr(rgb),
+          target: rgb,
+          current: rgb,
+          progress: 1,
+        };
+      });
+    };
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      columns = Math.ceil(w / charWidth);
+      rows = Math.ceil(h / charHeight);
+      makeLetters();
+      draw();
+    };
+
+    const draw = () => {
+      if (!ctx) return;
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = "#08090c";
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+
+      ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      ctx.textBaseline = "top";
+
+      for (let i = 0; i < letters.length; i++) {
+        const letter = letters[i];
+        const x = (i % columns) * charWidth;
+        const y = Math.floor(i / columns) * charHeight;
+        ctx.fillStyle = letter.color;
+        ctx.fillText(letter.char, x, y);
+      }
+    };
+
+    const glitch = () => {
+      if (letters.length === 0) return;
+      const count = Math.max(1, Math.floor(letters.length * 0.05));
+      for (let i = 0; i < count; i++) {
+        const index = Math.floor(Math.random() * letters.length);
+        const letter = letters[index];
+        letter.char = randomChar();
+        letter.target = hexToRgb(randomColor());
+        if (smooth) {
+          letter.progress = 0;
+        } else {
+          letter.current = letter.target;
+          letter.color = rgbStr(letter.target);
+        }
+      }
+    };
+
+    const advance = () => {
+      let changed = false;
+      for (const letter of letters) {
+        if (letter.progress >= 1) continue;
+        letter.progress = Math.min(1, letter.progress + 0.05);
+        letter.current = [
+          letter.current[0] + (letter.target[0] - letter.current[0]) * 0.05,
+          letter.current[1] + (letter.target[1] - letter.current[1]) * 0.05,
+          letter.current[2] + (letter.target[2] - letter.current[2]) * 0.05,
+        ];
+        letter.color = rgbStr(letter.current);
+        changed = true;
+      }
+      return changed;
+    };
+
+    const tick = (now: number) => {
+      if (!running) return;
+      let needsDraw = false;
+
+      if (now - last >= glitchSpeed) {
+        glitch();
+        last = now;
+        needsDraw = true;
+      }
+      if (smooth && advance()) needsDraw = true;
+      if (needsDraw) draw();
+
+      frame = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let resizeTimer = 0;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(resize, 100);
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else if (!reduced.matches) start();
+    });
+
+    resize();
+    if (!reduced.matches) start();
+
+    reduced.addEventListener("change", () => {
+      if (reduced.matches) stop();
+      else start();
+    });
+  }
+</script>

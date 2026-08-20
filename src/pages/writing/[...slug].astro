@@ -1,0 +1,65 @@
+---
+import { Font, Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import "../../styles/global.css";
+import { profile } from "../../data/content";
+import LetterGlitch from "../../components/LetterGlitch.astro";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("writing", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, date, cover, coverAlt } = post.data;
+
+const displayDate = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{`${title} — ${profile.name}`}</title>
+    <meta name="theme-color" content="#08090c" />
+    <meta property="og:title" content={title} />
+    <meta property="og:type" content="article" />
+    <meta name="generator" content={Astro.generator} />
+
+    <Font cssVariable="--font-sans" preload />
+  </head>
+  <body>
+    <LetterGlitch />
+    <main class="wrap">
+      <a class="back" href="/">← {profile.name}</a>
+
+      <header class="post-header">
+        <h1>{title}</h1>
+        <time datetime={date.toISOString().slice(0, 10)}>{displayDate}</time>
+      </header>
+
+      {cover && (
+        <Image class="post-cover" src={cover} alt={coverAlt} widths={[600, 1200]} sizes="44rem" />
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <footer class="site-footer">
+        <p><a href="/">Back to {profile.name}</a></p>
+      </footer>
+    </main>
+  </body>
+</html>

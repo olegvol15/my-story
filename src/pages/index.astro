@@ -4,7 +4,7 @@ import { getCollection } from "astro:content";
 import "../styles/global.css";
 import { profile } from "../data/content";
 import WritingCard from "../components/WritingCard.astro";
-import LetterGlitch from "../components/LetterGlitch.astro";
+import Particles from "../components/Particles.astro";
 
 const title = `${profile.name} - a 20 year old software engineer from Ukraine building stuff and writing about it`;
 
@@ -35,7 +35,7 @@ const emphasise = (s: string) =>
     <Font cssVariable="--font-sans" preload />
   </head>
   <body>
-    <LetterGlitch />
+    <Particles />
     <main class="wrap">
       <img
         class="avatar"
@@ -46,7 +46,7 @@ const emphasise = (s: string) =>
         fetchpriority="high"
       />
 
-      <h1>{profile.firstName} <span class="mark">{profile.lastName}</span></h1>
+      <h1>{profile.firstName}{" "}<span class="mark">{profile.lastName}</span></h1>
 
       <p class="tagline">{profile.tagline}</p>
 
@@ -63,7 +63,9 @@ const emphasise = (s: string) =>
       </ul>
 
       <ul class="milestones">
-        {profile.milestones.map((item) => <li set:html={emphasise(item)} />)}
+        {profile.milestones.map((item) => (
+          <li><span set:html={emphasise(item)} /></li>
+        ))}
       </ul>
 
       {posts.length > 0 && (

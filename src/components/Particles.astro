@@ -1,0 +1,231 @@
+---
+interface Props {
+  density?: number;
+  maxCount?: number;
+  speed?: number;
+  starMinDelay?: number;
+  starMaxDelay?: number;
+}
+
+const {
+  density = 12000,
+  maxCount = 120,
+  speed = 1,
+  starMinDelay = 3000,
+  starMaxDelay = 8000,
+} = Astro.props;
+---
+
+<canvas
+  id="particles"
+  aria-hidden="true"
+  data-density={density}
+  data-max-count={maxCount}
+  data-speed={speed}
+  data-star-min={starMinDelay}
+  data-star-max={starMaxDelay}></canvas>
+
+<script>
+  const canvas = document.getElementById("particles") as HTMLCanvasElement | null;
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    const density = Number(canvas.dataset.density) || 12000;
+    const maxCount = Number(canvas.dataset.maxCount) || 120;
+    const speed = Number(canvas.dataset.speed) || 1;
+    const starMinDelay = Number(canvas.dataset.starMin) || 3000;
+    const starMaxDelay = Number(canvas.dataset.starMax) || 8000;
+
+    const palette = [
+      { rgb: "179,205,224", maxAlpha: 0.17 },
+      { rgb: "100,151,177", maxAlpha: 0.24 },
+    ];
+
+    type Particle = {
+      x: number;
+      y: number;
+      r: number;
+      vx: number;
+      vy: number;
+      rgb: string;
+      alpha: number;
+    };
+
+    let particles: Particle[] = [];
+    let w = 0;
+    let h = 0;
+    let frame = 0;
+    let running = false;
+    let last = 0;
+
+    type Star = {
+      x: number;
+      y: number;
+      dx: number;
+      dy: number;
+      speed: number;
+      len: number;
+      age: number;
+      life: number;
+    };
+
+    let star: Star | null = null;
+    let nextStarAt = 0;
+
+    const rand = (min: number, max: number) => min + Math.random() * (max - min);
+
+    const seed = () => {
+      const count = Math.min(maxCount, Math.max(18, Math.round((w * h) / density)));
+      particles = new Array(count).fill(null).map(() => {
+        const tone = palette[Math.floor(Math.random() * palette.length)];
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: rand(0.6, 1.8),
+          vx: rand(-0.08, 0.08) * speed,
+          vy: rand(-0.14, -0.02) * speed,
+          rgb: tone.rgb,
+          alpha: rand(tone.maxAlpha * 0.35, tone.maxAlpha),
+        };
+      });
+    };
+
+    const spawnStar = () => {
+      const angle = rand(0.32, 0.62);
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      star = {
+        x: dir === 1 ? rand(-0.1, 0.7) * w : rand(0.3, 1.1) * w,
+        y: rand(-0.05, 0.35) * h,
+        dx: Math.cos(angle) * dir,
+        dy: Math.sin(angle),
+        speed: rand(0.9, 1.5),
+        len: rand(90, 190),
+        age: 0,
+        life: rand(750, 1200),
+      };
+    };
+
+    const drawStar = () => {
+      if (!ctx || !star) return;
+      const t = star.age / star.life;
+      const fade = t < 0.18 ? t / 0.18 : 1 - (t - 0.18) / 0.82;
+      const alpha = Math.max(0, Math.min(1, fade)) * 0.85;
+      if (alpha <= 0.001) return;
+
+      const tailX = star.x - star.dx * star.len;
+      const tailY = star.y - star.dy * star.len;
+      const grad = ctx.createLinearGradient(star.x, star.y, tailX, tailY);
+      grad.addColorStop(0, `rgba(226,240,252,${alpha})`);
+      grad.addColorStop(1, "rgba(226,240,252,0)");
+
+      ctx.beginPath();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.9;
+      ctx.lineCap = "round";
+      ctx.moveTo(star.x, star.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.stroke();
+    };
+
+    const updateStar = (now: number, dt: number) => {
+      if (!star) {
+        if (now >= nextStarAt) spawnStar();
+        return;
+      }
+      star.age += dt;
+      star.x += star.dx * star.speed * dt * 0.25;
+      star.y += star.dy * star.speed * dt * 0.25;
+      const gone =
+        star.age >= star.life ||
+        star.y > h + star.len ||
+        star.x < -star.len * 2 ||
+        star.x > w + star.len * 2;
+      if (gone) {
+        star = null;
+        nextStarAt = now + rand(starMinDelay, starMaxDelay);
+      }
+    };
+
+    const draw = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, w, h);
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${p.rgb},${p.alpha})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      drawStar();
+    };
+
+    const step = () => {
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -4) p.x = w + 4;
+        else if (p.x > w + 4) p.x = -4;
+        if (p.y < -4) p.y = h + 4;
+        else if (p.y > h + 4) p.y = -4;
+      }
+    };
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seed();
+      draw();
+    };
+
+    const tick = (now: number) => {
+      if (!running) return;
+      const dt = last ? Math.min(now - last, 50) : 16;
+      last = now;
+      step();
+      updateStar(now, dt);
+      draw();
+      frame = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      last = 0;
+      const now = performance.now();
+      if (!star) {
+        nextStarAt = now + rand(starMinDelay * 0.3, starMaxDelay);
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let resizeTimer = 0;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(resize, 100);
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else if (!reduced.matches) start();
+    });
+
+    reduced.addEventListener("change", () => {
+      if (reduced.matches) stop();
+      else start();
+    });
+
+    resize();
+    if (!reduced.matches) start();
+  }
+</script>

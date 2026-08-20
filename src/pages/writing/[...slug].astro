@@ -4,7 +4,7 @@ import { getCollection, render } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import "../../styles/global.css";
 import { profile } from "../../data/content";
-import LetterGlitch from "../../components/LetterGlitch.astro";
+import Particles from "../../components/Particles.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("writing", ({ data }) => !data.draft);
@@ -40,7 +40,7 @@ const displayDate = date.toLocaleDateString("en-US", {
     <Font cssVariable="--font-sans" preload />
   </head>
   <body>
-    <LetterGlitch />
+    <Particles />
     <main class="wrap">
       <a class="back" href="/">← {profile.name}</a>
 

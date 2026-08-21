@@ -42,16 +42,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#particles {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: -1;
-  pointer-events: none;
-}
-
 a {
   color: inherit;
 }
@@ -155,12 +145,6 @@ h1 .mark {
   color: var(--fg);
 }
 
-.social-icon {
-  width: 20px;
-  height: 20px;
-  display: block;
-}
-
 .sr-status {
   position: absolute;
   width: 1px;
@@ -240,59 +224,6 @@ h1 .mark {
   gap: clamp(1.25rem, 3vw, 1.75rem);
 }
 
-.card {
-  position: relative;
-}
-
-.card-media {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: var(--radius);
-  border: 1px solid var(--hairline);
-  background: var(--surface);
-}
-
-.card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition:
-    transform 0.4s ease,
-    opacity 0.3s ease;
-  opacity: 0.85;
-}
-
-.card:hover .card-media img {
-  transform: scale(1.03);
-  opacity: 1;
-}
-
-.card h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--fg);
-  letter-spacing: -0.01em;
-  margin: 0.9rem 0 0.3rem;
-}
-
-.card h3 a {
-  text-decoration: none;
-}
-
-.card h3 a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius);
-}
-
-.card time {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
 .back {
   display: inline-block;
   font-size: 0.9rem;
@@ -340,6 +271,7 @@ h1 .mark {
 .prose h2 {
   font-size: 1.35rem;
 }
+
 .prose h3 {
   font-size: 1.1rem;
 }
@@ -353,6 +285,7 @@ h1 .mark {
   color: var(--fg);
   text-underline-offset: 3px;
 }
+
 .prose a:hover {
   color: var(--body);
 }
@@ -361,6 +294,7 @@ h1 .mark {
 .prose ol {
   padding-left: 1.25rem;
 }
+
 .prose li + li {
   margin-top: 0.6rem;
 }
@@ -393,98 +327,6 @@ h1 .mark {
   padding-left: 1.25rem;
   margin-left: 0;
   color: var(--muted);
-}
-
-.subscribe {
-  margin-top: clamp(4rem, 10vh, 6rem);
-}
-
-.subscribe h2 {
-  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-  font-weight: 600;
-  color: var(--fg);
-  letter-spacing: -0.015em;
-  margin: 0 0 1.25rem;
-}
-
-.subscribe-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  align-items: stretch;
-}
-
-.subscribe-input {
-  flex: 1 1 18rem;
-  min-width: 0;
-  font: inherit;
-  font-size: 0.95rem;
-  color: var(--fg);
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 0.75rem 1rem;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.subscribe-input::placeholder {
-  color: var(--muted);
-}
-
-.subscribe-input:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-.subscribe-input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.subscribe-button {
-  font: inherit;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--fg);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.subscribe-button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.28);
-}
-
-.subscribe-input:disabled,
-.subscribe-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.subscribe-follow {
-  margin: 1rem 0 0;
-  font-size: 0.95rem;
-  color: var(--muted);
-}
-
-.subscribe-follow a {
-  color: var(--fg);
-  text-decoration: none;
-  border-bottom: 1px solid var(--hairline);
-}
-
-.subscribe-follow a:hover {
-  border-color: var(--fg);
 }
 
 .site-footer {

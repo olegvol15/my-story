@@ -1,0 +1,39 @@
+---
+import { newsletter } from "../data/content";
+
+const configured = newsletter.action.length > 0;
+---
+
+<section class="subscribe" aria-labelledby="subscribe-heading">
+  <h2 id="subscribe-heading">{newsletter.heading}</h2>
+
+  <form
+    class="subscribe-form"
+    action={configured ? newsletter.action : undefined}
+    method="post"
+    target="_blank"
+  >
+    <label class="sr-status" for="subscribe-email">Email address</label>
+    <input
+      id="subscribe-email"
+      class="subscribe-input"
+      type="email"
+      name={newsletter.field}
+      placeholder={newsletter.placeholder}
+      autocomplete="email"
+      required
+      disabled={!configured}
+    />
+    <button class="subscribe-button" type="submit" disabled={!configured}>
+      {newsletter.cta}
+    </button>
+  </form>
+
+  <p class="subscribe-follow">
+    And follow me on{" "}
+    <a href={newsletter.followHref} rel="me noopener" target="_blank">
+      {newsletter.followLabel}
+    </a>{" "}
+    where I'm very active
+  </p>
+</section>

@@ -36,8 +36,8 @@ const {
     const starMaxDelay = Number(canvas.dataset.starMax) || 8000;
 
     const palette = [
-      { rgb: "179,205,224", maxAlpha: 0.17 },
-      { rgb: "100,151,177", maxAlpha: 0.24 },
+      { rgb: "214,232,247", maxAlpha: 0.42 },
+      { rgb: "150,190,215", maxAlpha: 0.55 },
     ];
 
     type Particle = {
@@ -84,7 +84,7 @@ const {
           vx: rand(-0.08, 0.08) * speed,
           vy: rand(-0.14, -0.02) * speed,
           rgb: tone.rgb,
-          alpha: rand(tone.maxAlpha * 0.35, tone.maxAlpha),
+          alpha: rand(tone.maxAlpha * 0.5, tone.maxAlpha),
         };
       });
     };
@@ -151,9 +151,12 @@ const {
       for (const p of particles) {
         ctx.beginPath();
         ctx.fillStyle = `rgba(${p.rgb},${p.alpha})`;
+        ctx.shadowColor = `rgba(${p.rgb},${p.alpha * 0.8})`;
+        ctx.shadowBlur = p.r * 3;
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
+      ctx.shadowBlur = 0;
       drawStar();
     };
 

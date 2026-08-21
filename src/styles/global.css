@@ -103,6 +103,13 @@ h1 {
   margin: 2rem 0 0;
 }
 
+h1.name {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.12;
+}
+
 h1 .mark {
   color: var(--muted);
 }
@@ -386,6 +393,98 @@ h1 .mark {
   padding-left: 1.25rem;
   margin-left: 0;
   color: var(--muted);
+}
+
+.subscribe {
+  margin-top: clamp(4rem, 10vh, 6rem);
+}
+
+.subscribe h2 {
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.015em;
+  margin: 0 0 1.25rem;
+}
+
+.subscribe-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.subscribe-input {
+  flex: 1 1 18rem;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.subscribe-input::placeholder {
+  color: var(--muted);
+}
+
+.subscribe-input:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.subscribe-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.subscribe-button {
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.subscribe-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.subscribe-input:disabled,
+.subscribe-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.subscribe-follow {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.subscribe-follow a {
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.subscribe-follow a:hover {
+  border-color: var(--fg);
 }
 
 .site-footer {

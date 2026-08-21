@@ -6,6 +6,7 @@ const writing = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      description: z.string().optional(),
       date: z.coerce.date(),
       cover: image().optional(),
       coverAlt: z.string().default(""),

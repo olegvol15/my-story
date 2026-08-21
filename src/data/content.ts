@@ -37,6 +37,16 @@ export const profile = {
   ],
 };
 
+export const newsletter = {
+  action: "https://app.kit.com/forms/9829499/subscriptions",
+  field: "email_address",
+  heading: "Subscribe so you don't miss any new posts",
+  placeholder: "Enter your email",
+  cta: "Subscribe",
+  followLabel: "X",
+  followHref: "https://x.com/olegvolo15",
+};
+
 export const timeline = [
   {
     date: "Jun 2026",

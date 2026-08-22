@@ -48,6 +48,7 @@ const {
       vy: number;
       rgb: string;
       alpha: number;
+      d: number;
     };
 
     let particles: Particle[] = [];
@@ -71,6 +72,11 @@ const {
     let star: Star | null = null;
     let nextStarAt = 0;
 
+    let intro = 1;
+    let introStart = 0;
+    let firstRun = true;
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
     const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
     const seed = () => {
@@ -85,6 +91,7 @@ const {
           vy: rand(-0.14, -0.02) * speed,
           rgb: tone.rgb,
           alpha: rand(tone.maxAlpha * 0.5, tone.maxAlpha),
+          d: Math.random(),
         };
       });
     };
@@ -148,12 +155,21 @@ const {
     const draw = () => {
       if (!ctx) return;
       ctx.clearRect(0, 0, w, h);
+      const settled = intro >= 1;
       for (const p of particles) {
+        let k = 1;
+        if (!settled) {
+          const span = 1 - p.d * 0.5;
+          k = easeOutCubic(Math.max(0, Math.min(1, (intro - p.d * 0.5) / span)));
+        }
+        const alpha = p.alpha * k;
+        if (alpha <= 0.002) continue;
+        const r = p.r * (0.72 + 0.28 * k);
         ctx.beginPath();
-        ctx.fillStyle = `rgba(${p.rgb},${p.alpha})`;
-        ctx.shadowColor = `rgba(${p.rgb},${p.alpha * 0.8})`;
-        ctx.shadowBlur = p.r * 3;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.rgb},${alpha})`;
+        ctx.shadowColor = `rgba(${p.rgb},${alpha * 0.8})`;
+        ctx.shadowBlur = r * 3;
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.shadowBlur = 0;
@@ -161,9 +177,10 @@ const {
     };
 
     const step = () => {
+      const drift = 1 + (1 - intro) * 2.2;
       for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x += p.vx * drift;
+        p.y += p.vy * drift;
         if (p.x < -4) p.x = w + 4;
         else if (p.x > w + 4) p.x = -4;
         if (p.y < -4) p.y = h + 4;
@@ -186,8 +203,16 @@ const {
 
     const tick = (now: number) => {
       if (!running) return;
+      if (firstRun) {
+        firstRun = false;
+        introStart = now;
+        nextStarAt = now + 600;
+      }
       const dt = last ? Math.min(now - last, 50) : 16;
       last = now;
+      if (intro < 1 && introStart) {
+        intro = easeOutCubic(Math.min(1, (now - introStart) / 900));
+      }
       step();
       updateStar(now, dt);
       draw();
@@ -199,7 +224,7 @@ const {
       running = true;
       last = 0;
       const now = performance.now();
-      if (!star) {
+      if (!firstRun && !star) {
         nextStarAt = now + rand(starMinDelay * 0.3, starMaxDelay);
       }
       frame = requestAnimationFrame(tick);
@@ -224,10 +249,14 @@ const {
     });
 
     reduced.addEventListener("change", () => {
-      if (reduced.matches) stop();
-      else start();
+      if (reduced.matches) {
+        intro = 1;
+        stop();
+        draw();
+      } else start();
     });
 
+    if (!reduced.matches) intro = 0;
     resize();
     if (!reduced.matches) start();
   }
@@ -243,4 +272,5 @@ const {
   z-index: -1;
   pointer-events: none;
 }
+
 </style>

@@ -7,6 +7,7 @@ import WritingCard from "../components/WritingCard.astro";
 import SocialIcon from "../components/SocialIcon.astro";
 import Subscribe from "../components/Subscribe.astro";
 import Particles from "../components/Particles.astro";
+import GlitchName from "../components/GlitchName.astro";
 
 const title = `${profile.name} - a 20 year old software engineer from Ukraine building stuff and writing about it`;
 
@@ -43,6 +44,7 @@ const emphasise = (s: string) =>
     <main class="wrap">
       <img
         class="avatar"
+        data-reveal
         src="/my-photo.jpg"
         alt={`${profile.name}`}
         width="640"
@@ -50,11 +52,11 @@ const emphasise = (s: string) =>
         fetchpriority="high"
       />
 
-      <h1 class="name">{profile.firstName}{" "}<span class="mark">{profile.lastName}</span></h1>
+      <GlitchName firstName={profile.firstName} lastName={profile.lastName} revealDelay="80ms" />
 
-      <p class="tagline">{profile.tagline}</p>
+      <p class="tagline" data-reveal style="--reveal-delay: 160ms">{profile.tagline}</p>
 
-      <ul class="links">
+      <ul class="links" data-reveal style="--reveal-delay: 240ms">
         {profile.links.map((link) => (
           <li>
             <a
@@ -76,14 +78,14 @@ const emphasise = (s: string) =>
         <li aria-live="polite" class="sr-status" id="copy-status"></li>
       </ul>
 
-      <ul class="milestones">
+      <ul class="milestones" data-reveal style="--reveal-delay: 320ms">
         {profile.milestones.map((item) => (
           <li><span set:html={emphasise(item)} /></li>
         ))}
       </ul>
 
       {posts.length > 0 && (
-        <section class="writing" aria-labelledby="writing-heading">
+        <section class="writing" aria-labelledby="writing-heading" data-reveal style="--reveal-delay: 400ms">
           <h2 id="writing-heading">Writing</h2>
           <div class="cards">
             {posts.map((post) => <WritingCard post={post} />)}
@@ -91,7 +93,7 @@ const emphasise = (s: string) =>
         </section>
       )}
 
-      <Subscribe />
+      <Subscribe revealDelay="480ms" />
     </main>
 
     <script>

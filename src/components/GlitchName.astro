@@ -1,0 +1,142 @@
+---
+interface Props {
+  firstName: string;
+  lastName: string;
+  revealDelay?: string;
+}
+
+const { firstName, lastName, revealDelay } = Astro.props;
+---
+
+<h1
+  class="name"
+  data-reveal
+  data-first={firstName}
+  data-last={lastName}
+  style={revealDelay === undefined ? undefined : `--reveal-delay: ${revealDelay}`}
+>
+  <span class="name-text">{firstName}{" "}<span class="mark">{lastName}</span></span>
+  <span class="name-glitch" aria-hidden="true"></span>
+</h1>
+
+<script>
+  const heading = document.querySelector<HTMLHeadingElement>("h1.name");
+  const real = heading?.querySelector<HTMLSpanElement>(".name-text");
+  const layer = heading?.querySelector<HTMLSpanElement>(".name-glitch");
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (heading && real && layer && !reduced.matches) {
+    const first = heading.dataset.first ?? "";
+    const last = heading.dataset.last ?? "";
+    const full = `${first} ${last}`;
+
+    const CHARS =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789".split("");
+    const BLUES = ["#005b96", "#03396c", "#011f4b"];
+
+    const START = 200;
+    const STEP = 45;
+    const TICK = 50;
+
+    const pick = (list: string[]) =>
+      list[Math.floor(Math.random() * list.length)];
+
+    let timer = 0;
+    let done = false;
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      window.clearInterval(timer);
+      heading.classList.remove("is-glitching");
+      layer.textContent = "";
+    };
+
+    // The overlay is a single non-wrapping line. If the real name wraps — which it
+    // does on narrow phones — the two would diverge and look broken, so skip.
+    const wraps = real.getClientRects().length > 1;
+
+    // If the h1's own reveal has already finished, the script arrived late and the
+    // name has been readable for a while. Scrambling it now would be worse than not.
+    const revealDone = () => {
+      if (typeof heading.getAnimations !== "function") return false;
+      const anim = heading
+        .getAnimations()
+        .find((a) => (a as CSSAnimation).animationName === "reveal-rise");
+      const progress = anim?.effect?.getComputedTiming().progress;
+      return typeof progress === "number" && progress >= 0.9;
+    };
+
+    if (!wraps && !revealDone()) {
+      // One inline span per character. Inline, never inline-block — inline-block
+      // would also break the inter-word space.
+      const cells = [...full].map((char) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        layer.appendChild(span);
+        return span;
+      });
+
+      const finalColour = (i: number) =>
+        i < first.length ? "var(--fg)" : "var(--muted)";
+
+      heading.classList.add("is-glitching");
+
+      // A resize can change where the real name wraps, invalidating the overlay.
+      window.addEventListener("resize", finish, { once: true });
+      reduced.addEventListener("change", finish, { once: true });
+
+      const begin = performance.now();
+
+      timer = window.setInterval(() => {
+        const elapsed = performance.now() - begin;
+        let settled = 0;
+
+        cells.forEach((cell, i) => {
+          const char = full[i];
+
+          // The space never scrambles — swapping it would jump the word spacing.
+          if (char === " ") {
+            settled += 1;
+            return;
+          }
+
+          if (elapsed >= START + i * STEP) {
+            if (cell.textContent !== char) cell.textContent = char;
+            cell.style.color = finalColour(i);
+            settled += 1;
+            return;
+          }
+
+          cell.textContent = pick(CHARS);
+          cell.style.color = pick(BLUES);
+        });
+
+        if (settled === cells.length) finish();
+      }, TICK);
+    }
+  }
+</script>
+
+<style>
+  h1.name {
+    position: relative;
+  }
+
+  .name-glitch {
+    position: absolute;
+    inset: 0;
+    white-space: pre;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* color: transparent, not visibility: hidden — the latter would drop the name
+     out of the accessibility tree for the whole scramble. This keeps the real
+     text present, selectable, and announced, just invisible. */
+  h1.name.is-glitching .name-text,
+  h1.name.is-glitching .name-text .mark {
+    color: transparent;
+  }
+</style>

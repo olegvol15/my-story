@@ -43,22 +43,22 @@ const displayDate = date.toLocaleDateString("en-US", {
   <body>
     <Particles />
     <main class="wrap">
-      <a class="back" href="/">← {profile.name}</a>
+      <a class="back" href="/" data-reveal>← {profile.name}</a>
 
-      <header class="post-header">
+      <header class="post-header" data-reveal style="--reveal-delay: 80ms">
         <h1>{title}</h1>
         <time datetime={date.toISOString().slice(0, 10)}>{displayDate}</time>
       </header>
 
       {cover && (
-        <Image class="post-cover" src={cover} alt={coverAlt} widths={[600, 1200]} sizes="44rem" />
+        <Image class="post-cover" src={cover} alt={coverAlt} widths={[600, 1200]} sizes="44rem" data-reveal style="--reveal-delay: 160ms" />
       )}
 
-      <div class="prose">
+      <div class="prose" data-reveal style="--reveal-delay: 240ms">
         <Content />
       </div>
 
-      <footer class="site-footer">
+      <footer class="site-footer" data-reveal style="--reveal-delay: 320ms">
         <p><a href="/">Back to {profile.name}</a></p>
       </footer>
     </main>

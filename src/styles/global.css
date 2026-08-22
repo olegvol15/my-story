@@ -9,6 +9,7 @@
   --measure: 44rem;
   --gutter: clamp(1.25rem, 5vw, 2rem);
   --radius: 12px;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
 *,
@@ -339,6 +340,51 @@ h1 .mark {
   border-top: 1px solid var(--hairline);
   font-size: 0.875rem;
   color: var(--muted);
+}
+
+/* ---------- Entrance reveal ---------- */
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes avatar-develop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: grayscale(1) blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: grayscale(1) blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    animation-name: reveal-rise;
+    animation-duration: 500ms;
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* The portrait resolves from blur instead of rising. grayscale(1) is restated
+     in both keyframes because filter is not additive — omitting it would flash
+     the photo into colour for the duration. No fill-mode here: the inherited
+     `backwards` is what releases transform/filter back to :hover afterwards. */
+  .avatar[data-reveal] {
+    animation-name: avatar-develop;
+    animation-duration: 700ms;
+  }
 }
 
 @media (max-width: 640px) {

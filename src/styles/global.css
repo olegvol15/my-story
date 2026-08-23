@@ -360,14 +360,6 @@ h1 .mark {
   color: var(--muted);
 }
 
-.site-footer {
-  margin-top: clamp(4rem, 10vh, 6rem);
-  padding-top: 2rem;
-  border-top: 1px solid var(--hairline);
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
 /* ---------- Entrance reveal ---------- */
 
 @keyframes reveal-rise {

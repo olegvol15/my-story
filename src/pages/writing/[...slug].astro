@@ -5,6 +5,7 @@ import type { GetStaticPaths } from "astro";
 import "../../styles/global.css";
 import { profile } from "../../data/content";
 import Particles from "../../components/Particles.astro";
+import Subscribe from "../../components/Subscribe.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("writing", ({ data }) => !data.draft);
@@ -58,9 +59,7 @@ const displayDate = date.toLocaleDateString("en-US", {
         <Content />
       </div>
 
-      <footer class="site-footer" data-reveal style="--reveal-delay: 320ms">
-        <p><a href="/">Back Home</a></p>
-      </footer>
+      <Subscribe revealDelay="320ms" />
     </main>
   </body>
 </html>

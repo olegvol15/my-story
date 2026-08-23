@@ -254,8 +254,11 @@ h1 .mark {
 }
 
 .post-cover {
-  width: 100%;
-  margin: 2.5rem 0;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: min(30rem, 65vh);
+  margin: 2.5rem auto;
   border-radius: var(--radius);
   border: 1px solid var(--hairline);
 }
@@ -325,6 +328,29 @@ h1 .mark {
 .prose pre code {
   background: none;
   padding: 0;
+}
+
+.prose img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: min(30rem, 65vh);
+  margin: 2.5rem auto 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+}
+
+.prose p:has(> img) + p {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* restore normal spacing for the body paragraph after a caption */
+.prose p:has(> img) + p + p {
+  margin-top: 2.5rem;
 }
 
 .prose blockquote {

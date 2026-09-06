@@ -1,8 +1,10 @@
 ---
-import { Font } from "astro:assets";
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import "../styles/global.css";
+import photo from "../assets/my-photo.jpg";
 import { profile } from "../data/content";
+import BaseHead from "../components/BaseHead.astro";
 import WritingCard from "../components/WritingCard.astro";
 import SocialIcon from "../components/SocialIcon.astro";
 import Subscribe from "../components/Subscribe.astro";
@@ -24,32 +26,25 @@ const emphasise = (s: string) =>
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="alternate" type="application/rss+xml" title="Writing" href="/rss.xml" />
-    <title>{title}</title>
-    <meta name="description" content={profile.intro} />
-    <meta name="theme-color" content="#08090c" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={profile.intro} />
-    <meta property="og:type" content="website" />
-    <meta name="generator" content={Astro.generator} />
-
-    <Font cssVariable="--font-sans" preload />
-    <Font cssVariable="--font-display" preload />
+    <BaseHead
+      title={title}
+      description={profile.intro}
+      image={photo}
+      imageAlt={profile.name}
+      preloadDisplayFont
+    />
   </head>
   <body>
     <Particles />
     <main class="wrap">
-      <img
+      <Image
         class="avatar"
         data-reveal
-        src="/my-photo.jpg"
-        alt={`${profile.name}`}
-        width="640"
-        height="640"
+        src={photo}
+        alt={profile.name}
+        width={180}
+        densities={[1, 2]}
+        loading="eager"
         fetchpriority="high"
       />
 

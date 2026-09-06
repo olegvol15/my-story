@@ -6,6 +6,7 @@ export const profile = {
   firstName: "Oleh",
   lastName: "Volostnykh",
   email: "olehvolostnykh15@gmail.com",
+  xHandle: "@olegvolo15",
   tagline:
     "20 y/o software engineer with big dreams. Building products and documenting the journey.",
   milestones: [

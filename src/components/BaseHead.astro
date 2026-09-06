@@ -1,0 +1,100 @@
+---
+import { Font, getImage } from "astro:assets";
+import { profile } from "../data/content";
+
+interface Props {
+  /** Full contents of <title>. */
+  title: string;
+  description: string;
+  /** og:/twitter: title, when it should differ from the page title. */
+  ogTitle?: string;
+  type?: "website" | "article";
+  /** Imported asset, or a path under public/. */
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  publishedTime?: Date;
+  /** Only the homepage renders display-font text above the fold. */
+  preloadDisplayFont?: boolean;
+}
+
+const {
+  title,
+  description,
+  ogTitle = title,
+  type = "website",
+  image,
+  imageAlt = "",
+  publishedTime,
+  preloadDisplayFont = false,
+} = Astro.props;
+
+// Match the trailing slash the RSS feed and Astro's build output use, so the
+// canonical URL and the feed link agree on one address per post.
+const path = Astro.url.pathname.endsWith("/")
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`;
+const canonical = new URL(path, Astro.site).href;
+
+let ogImage: string | undefined;
+let ogImageSize: { width: number; height: number } | undefined;
+
+if (typeof image === "string") {
+  ogImage = new URL(image, Astro.site).href;
+} else if (image) {
+  // Social cards crop to roughly 1.91:1, so hand them an image already at that
+  // ratio rather than letting them slice a portrait cover. "attention" picks
+  // the most salient region, which keeps the subject in frame; a fixed edge
+  // crop decapitates portrait shots. Never ask for more than the source has -
+  // sharp will not upscale, and the og:image:* tags must not lie.
+  const width = Math.min(1200, image.width);
+  const size = { width, height: Math.round((width * 630) / 1200) };
+  const generated = await getImage({
+    src: image,
+    format: "jpeg",
+    ...size,
+    fit: "cover",
+    position: "attention",
+  });
+  ogImage = new URL(generated.src, Astro.site).href;
+  ogImageSize = size;
+}
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="alternate" type="application/rss+xml" title="Writing" href="/rss.xml" />
+<link rel="canonical" href={canonical} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="author" content={profile.name} />
+<meta name="theme-color" content="#08090c" />
+<meta name="generator" content={Astro.generator} />
+
+<meta property="og:title" content={ogTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={profile.name} />
+<meta property="og:locale" content="en_US" />
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image:alt" content={imageAlt} />}
+{ogImageSize && <meta property="og:image:width" content={String(ogImageSize.width)} />}
+{ogImageSize && <meta property="og:image:height" content={String(ogImageSize.height)} />}
+{publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{type === "article" && <meta property="article:author" content={profile.name} />}
+
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:site" content={profile.xHandle} />
+<meta name="twitter:creator" content={profile.xHandle} />
+<meta name="twitter:title" content={ogTitle} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+{ogImage && <meta name="twitter:image:alt" content={imageAlt} />}
+
+<Font cssVariable="--font-sans" preload />
+{preloadDisplayFont && <Font cssVariable="--font-display" preload />}

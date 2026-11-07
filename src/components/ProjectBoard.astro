@@ -47,10 +47,8 @@ const columns = board(Astro.props.project);
 
 <style>
 .board {
-  /* Wider than the 44rem text column so three columns fit; body clips overflow-x. */
   width: min(64rem, 100vw - 2 * var(--gutter));
   margin: clamp(3.5rem, 9vh, 5rem) 0 0 50%;
-  /* translate, not transform: the data-reveal animation owns transform. */
   translate: -50% 0;
 }
 

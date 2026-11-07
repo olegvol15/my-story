@@ -1,6 +1,3 @@
-# CI only. Deploys are done by Cloudflare Pages' Git integration (project "my-story"):
-# every push to main goes live, every other branch/PR gets a preview URL.
-# This workflow is the gate that should be green before anything reaches main.
 name: CI
 
 on:
@@ -18,7 +15,6 @@ permissions:
 
 jobs:
   verify:
-    # Required status check on main (repo ruleset) - renaming it breaks the rule.
     name: Check and build
     runs-on: ubuntu-latest
     timeout-minutes: 10

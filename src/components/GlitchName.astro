@@ -53,12 +53,8 @@ const { firstName, lastName, revealDelay } = Astro.props;
       layer.textContent = "";
     };
 
-    // The overlay is a single non-wrapping line. If the real name wraps — which it
-    // does on narrow phones — the two would diverge and look broken, so skip.
     const wraps = real.getClientRects().length > 1;
 
-    // If the h1's own reveal has already finished, the script arrived late and the
-    // name has been readable for a while. Scrambling it now would be worse than not.
     const revealDone = () => {
       if (typeof heading.getAnimations !== "function") return false;
       const anim = heading
@@ -69,8 +65,6 @@ const { firstName, lastName, revealDelay } = Astro.props;
     };
 
     if (!wraps && !revealDone()) {
-      // One inline span per character. Inline, never inline-block — inline-block
-      // would also break the inter-word space.
       const cells = [...full].map((char) => {
         const span = document.createElement("span");
         span.textContent = char;
@@ -83,7 +77,6 @@ const { firstName, lastName, revealDelay } = Astro.props;
 
       heading.classList.add("is-glitching");
 
-      // A resize can change where the real name wraps, invalidating the overlay.
       window.addEventListener("resize", finish, { once: true });
       reduced.addEventListener("change", finish, { once: true });
 
@@ -96,7 +89,6 @@ const { firstName, lastName, revealDelay } = Astro.props;
         cells.forEach((cell, i) => {
           const char = full[i];
 
-          // The space never scrambles — swapping it would jump the word spacing.
           if (char === " ") {
             settled += 1;
             return;
@@ -140,9 +132,6 @@ const { firstName, lastName, revealDelay } = Astro.props;
     user-select: none;
   }
 
-  /* color: transparent, not visibility: hidden — the latter would drop the name
-     out of the accessibility tree for the whole scramble. This keeps the real
-     text present, selectable, and announced, just invisible. */
   h1.name.is-glitching .name-text,
   h1.name.is-glitching .name-text .mark {
     color: transparent;

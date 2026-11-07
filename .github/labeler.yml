@@ -1,6 +1,3 @@
-# Path-based "area:" labels, applied by .github/workflows/pr-labels.yml.
-# "type:" labels come from the PR title instead (see that workflow).
-
 "area: writing":
   - changed-files:
       - any-glob-to-any-file:

@@ -1,6 +1,5 @@
 const EXCERPT_LENGTH = 220;
 
-/** Strip markdown down to plain prose and cut it to a meta-description length. */
 export const toExcerpt = (markdown: string) => {
   const plain = markdown
     .replace(/```[\s\S]*?```/g, "")

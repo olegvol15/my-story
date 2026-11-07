@@ -103,8 +103,6 @@ import SocialIcon from "./SocialIcon.astro";
   align-items: center;
 }
 
-/* The copy-email <button> is created by the script above, so it never gets
-   Astro's scope attribute - it has to be reached with :global(). */
 .links a,
 .links :global(button) {
   font: inherit;
@@ -143,10 +141,6 @@ import SocialIcon from "./SocialIcon.astro";
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The portrait resolves from blur instead of rising. grayscale(1) is restated
-     in both keyframes because filter is not additive — omitting it would flash
-     the photo into colour for the duration. No fill-mode here: the inherited
-     `backwards` is what releases transform/filter back to :hover afterwards. */
   .avatar[data-reveal] {
     animation-name: avatar-develop;
     animation-duration: 700ms;

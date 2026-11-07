@@ -83,7 +83,6 @@
   text-align: center;
 }
 
-/* restore normal spacing for the body paragraph after a caption */
 .prose p:has(> img) + p + p {
   margin-top: 2.5rem;
 }
@@ -95,8 +94,6 @@
   color: var(--muted);
 }
 
-/* Wrapper and button are created by the copy script in layouts/Article.astro,
-   so they are styled here (global) rather than in that component. */
 .prose .code-block {
   position: relative;
 }

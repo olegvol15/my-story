@@ -1,6 +1,3 @@
-# Labels every PR and enforces a conventional-commit title.
-# PRs are squash-merged with the PR title as the commit message, so the title
-# *is* the commit that lands on main - it has to follow the convention.
 name: PR labels
 
 on:
@@ -51,8 +48,6 @@ jobs:
 
   areas:
     name: Area labels
-    # labeler rewrites the whole label set from a snapshot; run it after the title
-    # job or it races and drops the type: label. always(): still label bad titles.
     needs: title
     if: always()
     runs-on: ubuntu-latest

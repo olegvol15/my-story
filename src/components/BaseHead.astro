@@ -3,17 +3,13 @@ import { Font, getImage } from "astro:assets";
 import { profile } from "../data/content";
 
 interface Props {
-  /** Full contents of <title>. */
   title: string;
   description: string;
-  /** og:/twitter: title, when it should differ from the page title. */
   ogTitle?: string;
   type?: "website" | "article";
-  /** Imported asset, or a path under public/. */
   image?: ImageMetadata | string;
   imageAlt?: string;
   publishedTime?: Date;
-  /** Only the homepage renders display-font text above the fold. */
   preloadDisplayFont?: boolean;
 }
 
@@ -28,8 +24,6 @@ const {
   preloadDisplayFont = false,
 } = Astro.props;
 
-// Match the trailing slash the RSS feed and Astro's build output use, so the
-// canonical URL and the feed link agree on one address per post.
 const path = Astro.url.pathname.endsWith("/")
   ? Astro.url.pathname
   : `${Astro.url.pathname}/`;
@@ -41,11 +35,6 @@ let ogImageSize: { width: number; height: number } | undefined;
 if (typeof image === "string") {
   ogImage = new URL(image, Astro.site).href;
 } else if (image) {
-  // Social cards crop to roughly 1.91:1, so hand them an image already at that
-  // ratio rather than letting them slice a portrait cover. "attention" picks
-  // the most salient region, which keeps the subject in frame; a fixed edge
-  // crop decapitates portrait shots. Never ask for more than the source has -
-  // sharp will not upscale, and the og:image:* tags must not lie.
   const width = Math.min(1200, image.width);
   const size = { width, height: Math.round((width * 630) / 1200) };
   const generated = await getImage({

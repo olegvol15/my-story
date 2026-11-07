@@ -1,6 +1,6 @@
 # Agent guide: olehvolostnykh.com
 
-Personal site of Oleh Volostnykh: a hero, milestones, a Writing section (long-form posts) and a Projects section (project pages with a shipped/planned changelog). Built with Astro 7 as a fully static site. **The whole point is that it stays small and fast**, so treat every new dependency, script or request as a cost that has to justify itself.
+Personal site of Oleh Volostnykh: a hero, milestones, a Writing section (long-form posts) and a Projects section (project pages with a Backlog / In progress / Done board). Built with Astro 7 as a fully static site. **The whole point is that it stays small and fast**, so treat every new dependency, script or request as a cost that has to justify itself.
 
 ## Commands
 
@@ -29,6 +29,7 @@ src/
   components/
     Hero, Milestones  homepage top
     Card              the card used by both Writing and Projects
+    ProjectBoard      the three-column ticket board on project pages (wider than the text column; stacks on mobile)
     Feed              homepage Writing/Projects switch (CSS-only radios + :has(); tiny script syncs #writing/#projects).
                       Hides the switch and shows a plain heading when only one collection has entries.
     Subscribe         Kit newsletter form (see Newsletter below)
@@ -57,7 +58,7 @@ draft: false
 ---
 ```
 
-### New project / changelog entry
+### New project / board ticket
 Create `src/content/projects/<slug>.md` (URL `/projects/<slug>`). The body is the project description.
 ```yaml
 ---
@@ -71,15 +72,20 @@ stack: [Astro, TypeScript]
 links:
   - label: GitHub
     href: https://github.com/...
-shipped:                # any order; rendered newest first
-  - date: 2026-11-07
-    text: One sentence about what shipped
-planned:                # roadmap order; move an item to `shipped` with a date when it lands
-  - Next thing
+key: ABC                # optional ticket prefix; defaults to the slug's first 3 letters
+tickets:                # the board (Backlog | In progress | Done)
+  - title: One sentence about the work
+    status: done        # backlog | in-progress | done
+    done: 2026-11-07    # required when status is done (the build fails without it)
+    href: https://github.com/.../pull/12   # optional PR/issue/release link
+  - title: Next thing
+    status: backlog
 draft: false
 ---
 ```
-Projects are sorted on the homepage by latest `shipped` date (or `started` when nothing has shipped).
+Ticket keys (`ABC-1`, `ABC-2`…) come from the ticket's position in the list, so **only append new tickets at the end and never reorder or delete them**, or every key after it shifts. To move a ticket, change its `status` (and add `done:` when it's finished). Done is shown newest first; Backlog and In progress keep file order.
+
+Projects are sorted on the homepage by their latest `done` date (or `started` when nothing is done).
 
 Rules for content:
 - **Never invent content**: dates, changelog entries, metrics, project facts or post text. If something is unknown, leave it empty or ask. Don't publish placeholders.

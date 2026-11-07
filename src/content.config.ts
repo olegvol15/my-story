@@ -28,10 +28,29 @@ const projects = defineCollection({
       coverAlt: z.string().default(""),
       stack: z.array(z.string()).default([]),
       links: z.array(z.object({ label: z.string(), href: z.url() })).default([]),
-      /** Changelog. Order in the file doesn't matter; it's sorted newest first. */
-      shipped: z.array(z.object({ date: z.coerce.date(), text: z.string() })).default([]),
-      /** Roadmap, in the order you intend to do it. Move a line to `shipped` when it lands. */
-      planned: z.array(z.string()).default([]),
+      /** Ticket key prefix (TIP -> TIP-1, TIP-2…). Defaults to the slug's first 3 letters. */
+      key: z.string().regex(/^[A-Z][A-Z0-9]{1,5}$/).optional(),
+      /**
+       * The project board. Keys come from list position, so only ever append new
+       * tickets at the end; move one between columns by changing its status.
+       */
+      tickets: z
+        .array(
+          z
+            .object({
+              title: z.string(),
+              status: z.enum(["backlog", "in-progress", "done"]),
+              /** Required once done; also drives "updated" on the homepage card. */
+              done: z.coerce.date().optional(),
+              /** Optional PR/issue/release link. */
+              href: z.url().optional(),
+            })
+            .refine((t) => t.status !== "done" || t.done, {
+              message: "a done ticket needs a `done` date",
+              path: ["done"],
+            }),
+        )
+        .default([]),
       draft: z.boolean().default(false),
     }),
 });

@@ -1,0 +1,191 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate, toISODate } from "../lib/posts";
+import { board } from "../lib/projects";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const columns = board(Astro.props.project);
+---
+
+<section class="board" aria-labelledby="board-heading">
+  <h2 id="board-heading">Board</h2>
+
+  <div class="columns">
+    {columns.map((column) => (
+      <section class="column" data-status={column.status} aria-labelledby={`col-${column.status}`}>
+        <h3 id={`col-${column.status}`}>
+          {column.label} <span class="count">{column.items.length}</span>
+        </h3>
+
+        {column.items.length > 0 ? (
+          <ul>
+            {column.items.map((ticket) => (
+              <li class="ticket">
+                <p class="ticket-title">{ticket.title}</p>
+                <p class="ticket-meta">
+                  {ticket.href ? (
+                    <a class="key" href={ticket.href} rel="noopener" target="_blank">{ticket.key}</a>
+                  ) : (
+                    <span class="key">{ticket.key}</span>
+                  )}
+                  {ticket.done && <time datetime={toISODate(ticket.done)}>{formatDate(ticket.done)}</time>}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty">Nothing here</p>
+        )}
+      </section>
+    ))}
+  </div>
+</section>
+
+<style>
+.board {
+  /* Wider than the 44rem text column so three columns fit; body clips overflow-x. */
+  width: min(64rem, 100vw - 2 * var(--gutter));
+  margin: clamp(3.5rem, 9vh, 5rem) 0 0 50%;
+  /* translate, not transform: the data-reveal animation owns transform. */
+  translate: -50% 0;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.board h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.column {
+  padding: 0.75rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.column h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.15rem 0.25rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.column h3::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1px solid var(--muted);
+}
+
+.column[data-status="in-progress"] h3::before {
+  border-color: var(--body);
+  background: var(--body);
+}
+
+.column[data-status="done"] h3::before {
+  border-color: var(--fg);
+  background: var(--fg);
+}
+
+.count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.column ul {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ticket {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--bg);
+  transition: border-color 0.2s ease;
+}
+
+.ticket:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.column[data-status="in-progress"] .ticket {
+  border-left: 2px solid var(--body);
+}
+
+.ticket-title {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--body);
+}
+
+.column[data-status="done"] .ticket-title {
+  color: var(--muted);
+}
+
+.ticket-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin: 0.55rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.key {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.02em;
+}
+
+a.key {
+  text-decoration: none;
+}
+
+a.key:hover {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+.empty {
+  margin: 0 0.25rem 0.25rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .board {
+    width: auto;
+    margin-left: 0;
+    translate: none;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

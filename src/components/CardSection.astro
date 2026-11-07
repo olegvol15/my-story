@@ -1,0 +1,49 @@
+---
+interface Props {
+  /** Used for the section id (anchor) and heading id. */
+  id: string;
+  heading: string;
+  revealDelay?: string;
+}
+
+const { id, heading, revealDelay } = Astro.props;
+---
+
+<section
+  class="card-section"
+  id={id}
+  aria-labelledby={`${id}-heading`}
+  data-reveal={revealDelay === undefined ? undefined : ""}
+  style={revealDelay === undefined ? undefined : `--reveal-delay: ${revealDelay}`}
+>
+  <h2 id={`${id}-heading`}>{heading}</h2>
+  <div class="cards">
+    <slot />
+  </div>
+</section>
+
+<style>
+.card-section {
+  margin-top: clamp(4rem, 10vh, 6rem);
+}
+
+.card-section h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin: 0 0 1.75rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+@media (max-width: 640px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

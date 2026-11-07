@@ -1,0 +1,83 @@
+---
+import { Image } from "astro:assets";
+import type { ComponentProps } from "astro/types";
+import { profile } from "../data/content";
+import BaseHead from "../components/BaseHead.astro";
+import Base from "./Base.astro";
+
+type Props = ComponentProps<typeof BaseHead> & {
+  heading: string;
+  backHref?: string;
+  cover?: ImageMetadata;
+  coverAlt?: string;
+};
+
+const { heading, backHref = "/", cover, coverAlt = "", ...head } = Astro.props;
+---
+
+<Base {...head} image={head.image ?? cover} imageAlt={head.imageAlt ?? coverAlt}>
+  <a class="back" href={backHref} data-reveal>← {profile.name}</a>
+
+  <header class="post-header" data-reveal style="--reveal-delay: 80ms">
+    <h1>{heading}</h1>
+    <div class="post-meta"><slot name="meta" /></div>
+  </header>
+
+  {cover && (
+    <Image
+      class="post-cover"
+      src={cover}
+      alt={coverAlt}
+      widths={[600, 1200]}
+      sizes="44rem"
+      loading="eager"
+      data-reveal
+      style="--reveal-delay: 160ms"
+    />
+  )}
+
+  <div class="prose" data-reveal style="--reveal-delay: 240ms">
+    <slot />
+  </div>
+
+  <slot name="after" />
+</Base>
+
+<style>
+.back {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+}
+
+.back:hover {
+  color: var(--fg);
+}
+
+.post-header h1 {
+  margin-top: 0;
+  font-size: clamp(1.85rem, 5vw, 2.75rem);
+}
+
+.post-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+.post-meta:empty {
+  display: none;
+}
+
+.post-cover {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: min(30rem, 65vh);
+  margin: 2.5rem auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+}
+</style>

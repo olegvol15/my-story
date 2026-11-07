@@ -1,0 +1,69 @@
+---
+import { profile } from "../data/content";
+
+interface Props {
+  revealDelay?: string;
+}
+
+const { revealDelay } = Astro.props;
+
+const escape = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const emphasise = (s: string) =>
+  escape(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+---
+
+<ul
+  class="milestones"
+  data-reveal={revealDelay === undefined ? undefined : ""}
+  style={revealDelay === undefined ? undefined : `--reveal-delay: ${revealDelay}`}
+>
+  {profile.milestones.map((item) => (
+    <li><span set:html={emphasise(item)} /></li>
+  ))}
+</ul>
+
+<style>
+.milestones {
+  list-style: none;
+  margin: clamp(3rem, 8vh, 4.5rem) 0 0;
+  padding: 0;
+}
+
+.milestones li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  transition: color 0.25s ease;
+}
+
+.milestones li:hover {
+  color: var(--fg);
+}
+
+.milestones li::before {
+  content: "";
+  flex: none;
+  margin-top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--muted);
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
+}
+
+.milestones li:hover::before {
+  width: 18px;
+  background: var(--fg);
+}
+
+/* <strong> comes from set:html, which Astro doesn't scope. */
+.milestones :global(strong) {
+  color: var(--fg);
+  font-weight: 600;
+}
+</style>

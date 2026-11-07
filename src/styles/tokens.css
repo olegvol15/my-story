@@ -1,0 +1,13 @@
+:root {
+  --bg: #08090c;
+  --fg: #ffffff;
+  --body: #b3cde0;
+  --muted: #6497b1;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --surface: rgba(255, 255, 255, 0.03);
+
+  --measure: 44rem;
+  --gutter: clamp(1.25rem, 5vw, 2rem);
+  --radius: 12px;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+}

@@ -1,0 +1,21 @@
+---
+import type { ComponentProps } from "astro/types";
+import "../styles/global.css";
+import BaseHead from "../components/BaseHead.astro";
+import Particles from "../components/Particles.astro";
+
+type Props = ComponentProps<typeof BaseHead>;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead {...Astro.props} />
+  </head>
+  <body>
+    <Particles />
+    <main class="wrap">
+      <slot />
+    </main>
+  </body>
+</html>

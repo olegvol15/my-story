@@ -122,6 +122,14 @@ const { firstName, lastName, revealDelay } = Astro.props;
 <style>
   h1.name {
     position: relative;
+    font-family: var(--font-display), Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.12;
+  }
+
+  h1 .mark {
+    color: var(--muted);
   }
 
   .name-glitch {

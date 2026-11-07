@@ -1,0 +1,155 @@
+---
+import { Image } from "astro:assets";
+import photo from "../assets/my-photo.jpg";
+import { profile } from "../data/content";
+import GlitchName from "./GlitchName.astro";
+import SocialIcon from "./SocialIcon.astro";
+---
+
+<Image
+  class="avatar"
+  data-reveal
+  src={photo}
+  alt={profile.name}
+  width={180}
+  densities={[1, 2]}
+  loading="eager"
+  fetchpriority="high"
+/>
+
+<GlitchName firstName={profile.firstName} lastName={profile.lastName} revealDelay="80ms" />
+
+<p class="tagline" data-reveal style="--reveal-delay: 160ms">{profile.tagline}</p>
+
+<ul class="links" data-reveal style="--reveal-delay: 240ms">
+  {profile.links.map((link) => (
+    <li>
+      <a
+        class="social"
+        href={link.href}
+        aria-label={link.label}
+        rel="me noopener"
+        target="_blank"
+      >
+        <SocialIcon name={link.icon} />
+      </a>
+    </li>
+  ))}
+  <li>
+    <a id="copy-email" href={`mailto:${profile.email}`} data-email={profile.email}>
+      Copy email
+    </a>
+  </li>
+  <li aria-live="polite" class="sr-status" id="copy-status"></li>
+</ul>
+
+<script>
+  const el = document.getElementById("copy-email");
+  const status = document.getElementById("copy-status");
+  const email = el?.dataset.email;
+
+  if (el && status && email && navigator.clipboard) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Copy email";
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(email);
+        status.textContent = "Email copied";
+        btn.textContent = "Copied";
+        setTimeout(() => {
+          btn.textContent = "Copy email";
+          status.textContent = "";
+        }, 2000);
+      } catch {
+        status.textContent = "Press Ctrl+C to copy: " + email;
+      }
+    });
+    el.replaceWith(btn);
+  }
+</script>
+
+<style>
+.avatar {
+  width: clamp(140px, 22vw, 180px);
+  height: clamp(140px, 22vw, 180px);
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+  filter: grayscale(1);
+  transition: filter 0.4s ease, transform 0.4s ease, border-color 0.4s ease;
+}
+
+.avatar:hover {
+  filter: grayscale(0);
+  transform: scale(1.04);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.tagline {
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  color: var(--body);
+  margin: 1.25rem 0 0;
+  max-width: 44ch;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 2.25rem 0 0 -0.5rem;
+  padding: 0;
+  align-items: center;
+}
+
+/* The copy-email <button> is created by the script above, so it never gets
+   Astro's scope attribute - it has to be reached with :global(). */
+.links a,
+.links :global(button) {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0.5rem;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.links a:hover,
+.links :global(button:hover) {
+  color: var(--fg);
+}
+
+@keyframes avatar-develop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: grayscale(1) blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: grayscale(1) blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The portrait resolves from blur instead of rising. grayscale(1) is restated
+     in both keyframes because filter is not additive — omitting it would flash
+     the photo into colour for the duration. No fill-mode here: the inherited
+     `backwards` is what releases transform/filter back to :hover afterwards. */
+  .avatar[data-reveal] {
+    animation-name: avatar-develop;
+    animation-duration: 700ms;
+  }
+}
+</style>

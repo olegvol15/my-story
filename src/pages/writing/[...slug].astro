@@ -1,16 +1,14 @@
 ---
-import { Image } from "astro:assets";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import type { GetStaticPaths } from "astro";
-import "../../styles/global.css";
 import { profile } from "../../data/content";
 import { toExcerpt } from "../../lib/excerpt";
-import BaseHead from "../../components/BaseHead.astro";
-import Particles from "../../components/Particles.astro";
+import { formatDate, getPublishedPosts, toISODate } from "../../lib/posts";
+import Article from "../../layouts/Article.astro";
 import Subscribe from "../../components/Subscribe.astro";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection("writing", ({ data }) => !data.draft);
+  const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -21,46 +19,20 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, date, cover, coverAlt } = post.data;
 const description = post.data.description ?? toExcerpt(post.body ?? "");
-
-const displayDate = date.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead
-      title={`${title} - ${profile.name}`}
-      ogTitle={title}
-      description={description}
-      type="article"
-      image={cover}
-      imageAlt={coverAlt}
-      publishedTime={date}
-    />
-  </head>
-  <body>
-    <Particles />
-    <main class="wrap">
-      <a class="back" href="/" data-reveal>← {profile.name}</a>
-
-      <header class="post-header" data-reveal style="--reveal-delay: 80ms">
-        <h1>{title}</h1>
-        <time datetime={date.toISOString().slice(0, 10)}>{displayDate}</time>
-      </header>
-
-      {cover && (
-        <Image class="post-cover" src={cover} alt={coverAlt} widths={[600, 1200]} sizes="44rem" data-reveal style="--reveal-delay: 160ms" />
-      )}
-
-      <div class="prose" data-reveal style="--reveal-delay: 240ms">
-        <Content />
-      </div>
-
-      <Subscribe revealDelay="320ms" />
-    </main>
-  </body>
-</html>
+<Article
+  title={`${title} - ${profile.name}`}
+  ogTitle={title}
+  description={description}
+  type="article"
+  publishedTime={date}
+  heading={title}
+  cover={cover}
+  coverAlt={coverAlt}
+  backHref="/#writing"
+>
+  <time slot="meta" datetime={toISODate(date)}>{formatDate(date)}</time>
+  <Content />
+  <Subscribe slot="after" revealDelay="320ms" />
+</Article>

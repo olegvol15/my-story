@@ -1,121 +1,26 @@
 ---
-import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import "../styles/global.css";
 import photo from "../assets/my-photo.jpg";
 import { profile } from "../data/content";
-import BaseHead from "../components/BaseHead.astro";
-import WritingCard from "../components/WritingCard.astro";
-import SocialIcon from "../components/SocialIcon.astro";
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Milestones from "../components/Milestones.astro";
+import WritingList from "../components/WritingList.astro";
+import ProjectList from "../components/ProjectList.astro";
 import Subscribe from "../components/Subscribe.astro";
-import Particles from "../components/Particles.astro";
-import GlitchName from "../components/GlitchName.astro";
 
 const title = `${profile.name} - a 20 year old software engineer from Ukraine building stuff and writing about it`;
-
-const posts = (await getCollection("writing", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-
-const escape = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const emphasise = (s: string) =>
-  escape(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead
-      title={title}
-      description={profile.intro}
-      image={photo}
-      imageAlt={profile.name}
-      preloadDisplayFont
-    />
-  </head>
-  <body>
-    <Particles />
-    <main class="wrap">
-      <Image
-        class="avatar"
-        data-reveal
-        src={photo}
-        alt={profile.name}
-        width={180}
-        densities={[1, 2]}
-        loading="eager"
-        fetchpriority="high"
-      />
-
-      <GlitchName firstName={profile.firstName} lastName={profile.lastName} revealDelay="80ms" />
-
-      <p class="tagline" data-reveal style="--reveal-delay: 160ms">{profile.tagline}</p>
-
-      <ul class="links" data-reveal style="--reveal-delay: 240ms">
-        {profile.links.map((link) => (
-          <li>
-            <a
-              class="social"
-              href={link.href}
-              aria-label={link.label}
-              rel="me noopener"
-              target="_blank"
-            >
-              <SocialIcon name={link.icon} />
-            </a>
-          </li>
-        ))}
-        <li>
-          <a id="copy-email" href={`mailto:${profile.email}`} data-email={profile.email}>
-            Copy email
-          </a>
-        </li>
-        <li aria-live="polite" class="sr-status" id="copy-status"></li>
-      </ul>
-
-      <ul class="milestones" data-reveal style="--reveal-delay: 320ms">
-        {profile.milestones.map((item) => (
-          <li><span set:html={emphasise(item)} /></li>
-        ))}
-      </ul>
-
-      {posts.length > 0 && (
-        <section class="writing" aria-labelledby="writing-heading" data-reveal style="--reveal-delay: 400ms">
-          <h2 id="writing-heading">Writing</h2>
-          <div class="cards">
-            {posts.map((post) => <WritingCard post={post} />)}
-          </div>
-        </section>
-      )}
-
-      <Subscribe revealDelay="480ms" />
-    </main>
-
-    <script>
-      const el = document.getElementById("copy-email");
-      const status = document.getElementById("copy-status");
-      const email = el?.dataset.email;
-
-      if (el && status && email && navigator.clipboard) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = "Copy email";
-        btn.addEventListener("click", async () => {
-          try {
-            await navigator.clipboard.writeText(email);
-            status.textContent = "Email copied";
-            btn.textContent = "Copied";
-            setTimeout(() => {
-              btn.textContent = "Copy email";
-              status.textContent = "";
-            }, 2000);
-          } catch {
-            status.textContent = "Press Ctrl+C to copy: " + email;
-          }
-        });
-        el.replaceWith(btn);
-      }
-    </script>
-  </body>
-</html>
+<Base
+  title={title}
+  description={profile.intro}
+  image={photo}
+  imageAlt={profile.name}
+  preloadDisplayFont
+>
+  <Hero />
+  <Milestones revealDelay="320ms" />
+  <WritingList revealDelay="400ms" />
+  <ProjectList revealDelay="480ms" />
+  <Subscribe revealDelay="560ms" />
+</Base>

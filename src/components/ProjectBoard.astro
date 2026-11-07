@@ -17,7 +17,8 @@ const columns = board(Astro.props.project);
     {columns.map((column) => (
       <section class="column" data-status={column.status} aria-labelledby={`col-${column.status}`}>
         <h3 id={`col-${column.status}`}>
-          {column.label} <span class="count">{column.items.length}</span>
+          <span class="lozenge">{column.label}</span>
+          <span class="count">{column.items.length}</span>
         </h3>
 
         {column.items.length > 0 ? (
@@ -69,10 +70,20 @@ const columns = board(Astro.props.project);
 }
 
 .column {
+  --tone: var(--tone-todo);
   padding: 0.75rem;
   border: 1px solid var(--hairline);
+  border-top: 2px solid color-mix(in srgb, var(--tone) 70%, transparent);
   border-radius: var(--radius);
   background: var(--surface);
+}
+
+.column[data-status="in-progress"] {
+  --tone: var(--tone-progress);
+}
+
+.column[data-status="done"] {
+  --tone: var(--tone-done);
 }
 
 .column h3 {
@@ -87,22 +98,11 @@ const columns = board(Astro.props.project);
   color: var(--muted);
 }
 
-.column h3::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  border: 1px solid var(--muted);
-}
-
-.column[data-status="in-progress"] h3::before {
-  border-color: var(--body);
-  background: var(--body);
-}
-
-.column[data-status="done"] h3::before {
-  border-color: var(--fg);
-  background: var(--fg);
+.lozenge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--tone) 15%, transparent);
+  color: var(--tone);
 }
 
 .count {
@@ -121,6 +121,7 @@ const columns = board(Astro.props.project);
 .ticket {
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--hairline);
+  border-left: 2px solid color-mix(in srgb, var(--tone) 55%, transparent);
   border-radius: calc(var(--radius) - 4px);
   background: var(--bg);
   transition: border-color 0.2s ease;
@@ -128,10 +129,11 @@ const columns = board(Astro.props.project);
 
 .ticket:hover {
   border-color: rgba(255, 255, 255, 0.18);
+  border-left-color: var(--tone);
 }
 
 .column[data-status="in-progress"] .ticket {
-  border-left: 2px solid var(--body);
+  border-left-color: var(--tone);
 }
 
 .ticket-title {
@@ -165,7 +167,7 @@ a.key {
 }
 
 a.key:hover {
-  color: var(--fg);
+  color: var(--tone);
   text-decoration: underline;
 }
 

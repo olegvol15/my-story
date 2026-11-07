@@ -75,7 +75,7 @@ Set `draft: true` on either to keep it out of the build. The full field list is 
 src/
 ├── pages/          index, rss.xml, writing/[...slug], projects/[...slug]
 ├── layouts/        Base (every page), Article (post and project pages)
-├── components/     Hero, Milestones, Card/CardSection, WritingList, ProjectList, Subscribe, BaseHead…
+├── components/     Hero, Milestones, Feed (Writing/Projects switch), Card, Subscribe, BaseHead…
 ├── content/        writing/ and projects/ Markdown + images
 ├── lib/            sorting, filtering and date helpers
 ├── data/           profile, links, milestones, newsletter config

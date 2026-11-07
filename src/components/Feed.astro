@@ -1,0 +1,195 @@
+---
+import { formatDate, getPublishedPosts, toISODate } from "../lib/posts";
+import { getPublishedProjects, lastActivity, statusLabel } from "../lib/projects";
+import Card from "./Card.astro";
+
+interface Props {
+  revealDelay?: string;
+}
+
+const { revealDelay } = Astro.props;
+const posts = await getPublishedPosts();
+const projects = await getPublishedProjects();
+
+const panels = [
+  { id: "writing", label: "Writing", count: posts.length },
+  { id: "projects", label: "Projects", count: projects.length },
+].filter((p) => p.count > 0);
+---
+
+{panels.length > 0 && (
+  <section
+    class="feed"
+    aria-label="Writing and projects"
+    data-reveal={revealDelay === undefined ? undefined : ""}
+    style={revealDelay === undefined ? undefined : `--reveal-delay: ${revealDelay}`}
+  >
+    {panels.length > 1 ? (
+      <fieldset class="switch">
+        <legend class="sr-status">Show</legend>
+        {panels.map((panel, i) => (
+          <>
+            <input type="radio" name="feed" id={`feed-${panel.id}`} value={panel.id} checked={i === 0} />
+            <label for={`feed-${panel.id}`}>
+              {panel.label} <span class="count">{panel.count}</span>
+            </label>
+          </>
+        ))}
+      </fieldset>
+    ) : (
+      <h2 class="solo-heading">{panels[0].label}</h2>
+    )}
+
+    {posts.length > 0 && (
+      <div class="cards" id="writing" data-panel="writing" aria-label="Writing">
+        {posts.map(({ id, data }) => (
+          <Card href={`/writing/${id}`} title={data.title} cover={data.cover} coverAlt={data.coverAlt}>
+            <time datetime={toISODate(data.date)}>{formatDate(data.date)}</time>
+          </Card>
+        ))}
+      </div>
+    )}
+
+    {projects.length > 0 && (
+      <div class="cards" id="projects" data-panel="projects" aria-label="Projects">
+        {projects.map((project) => {
+          const { title, cover, coverAlt, status } = project.data;
+          const updated = lastActivity(project);
+          return (
+            <Card href={`/projects/${project.id}`} title={title} cover={cover} coverAlt={coverAlt}>
+              {statusLabel[status]} · updated{" "}
+              <time datetime={toISODate(updated)}>{formatDate(updated)}</time>
+            </Card>
+          );
+        })}
+      </div>
+    )}
+  </section>
+)}
+
+<script>
+  // Lets /#projects (the back link from a project page) open the right panel,
+  // and keeps the URL in step with the switch so refresh and back work.
+  const feed = document.querySelector<HTMLElement>(".feed");
+  const radios = feed?.querySelectorAll<HTMLInputElement>('input[name="feed"]');
+
+  if (feed && radios && radios.length > 1) {
+    const fromHash = () => {
+      const match = [...radios].find((r) => `#${r.value}` === location.hash);
+      if (match) match.checked = true;
+    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    feed.addEventListener("change", (event) => {
+      const radio = event.target as HTMLInputElement;
+      const url = radio === radios[0] ? location.pathname : `#${radio.value}`;
+      history.replaceState(null, "", url);
+    });
+  }
+</script>
+
+<style>
+.feed {
+  margin-top: clamp(4rem, 10vh, 6rem);
+}
+
+.solo-heading {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin: 0 0 1.75rem;
+}
+
+/* Segmented switch: two radios with a pill that slides under the checked one. */
+.switch {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 0 1.75rem;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  inset: 3px auto 3px 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.switch:has(input:nth-of-type(2):checked)::before {
+  transform: translateX(100%);
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch label {
+  position: relative;
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.switch label:hover,
+.switch input:checked + label {
+  color: var(--fg);
+}
+
+.switch input:focus-visible + label {
+  outline: 2px solid var(--body);
+  outline-offset: 2px;
+}
+
+.count {
+  margin-left: 0.2rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+/* Browsers without :has() simply show both lists one after the other. */
+.feed:has(#feed-writing:checked) [data-panel="projects"],
+.feed:has(#feed-projects:checked) [data-panel="writing"] {
+  display: none;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .feed:has(.switch) .cards {
+    animation: panel-in 0.35s var(--ease-out);
+  }
+}
+
+@media (max-width: 640px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

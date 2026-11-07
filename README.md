@@ -21,7 +21,7 @@ AI & Frontend Engineering. GPA 4.8 / 5.00. Done in parallel with the university 
 
 ## Projects
 
-- **[tipun](https://github.com/olegvol15/tipun)** - a local, deterministic terminal coach that suggests cleaner, equivalent shell commands. No AI, no network. Written in Rust.
+- **[tipun](https://github.com/olegvol15/tipun)** - a deterministic terminal coach that suggests cleaner, equivalent shell commands. No AI. Written in Rust.
 - **[IdeaPick](https://github.com/olegvol15/ideapickapp)** - an AI platform that helps developers generate product ideas and pressure-test them before writing any code. Taken from idea to deploy in five weeks.
 - **LumiTune** - a full-stack music streaming platform with playback, playlists, search, albums, podcasts and a user library. Built solo as my thesis project.
 

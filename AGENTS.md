@@ -1,6 +1,6 @@
 # Agent guide: olehvolostnykh.com
 
-Personal site of Oleh Volostnykh: a hero, milestones, a Writing section (long-form posts) and a Projects section (project pages with a Backlog / In progress / Done board). Built with Astro 7 as a fully static site. **The whole point is that it stays small and fast**, so treat every new dependency, script or request as a cost that has to justify itself.
+Personal site of Oleh Volostnykh: a hero, milestones, a Writing section (long-form posts) and a Projects section (project pages with a Backlog / In progress / Done changelog board). Built with Astro 7 as a fully static site. **The whole point is that it stays small and fast**, so treat every new dependency, script or request as a cost that has to justify itself.
 
 ## Commands
 

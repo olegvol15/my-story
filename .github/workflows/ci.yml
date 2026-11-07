@@ -1,0 +1,47 @@
+# CI only. Deploys are done by Cloudflare Pages' Git integration (project "my-story"):
+# every push to main goes live, every other branch/PR gets a preview URL.
+# This workflow is the gate that should be green before anything reaches main.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    # Required status check on main (repo ruleset) - renaming it breaks the rule.
+    name: Check and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type-check (astro check)
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Report build size
+        run: |
+          echo "### Build output" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          du -sh dist >> "$GITHUB_STEP_SUMMARY"
+          find dist -name '*.html' | sort >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

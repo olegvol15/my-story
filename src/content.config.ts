@@ -1,4 +1,5 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 const writing = defineCollection({
@@ -26,7 +27,7 @@ const projects = defineCollection({
       cover: image().optional(),
       coverAlt: z.string().default(""),
       stack: z.array(z.string()).default([]),
-      links: z.array(z.object({ label: z.string(), href: z.string().url() })).default([]),
+      links: z.array(z.object({ label: z.string(), href: z.url() })).default([]),
       /** Changelog. Order in the file doesn't matter; it's sorted newest first. */
       shipped: z.array(z.object({ date: z.coerce.date(), text: z.string() })).default([]),
       /** Roadmap, in the order you intend to do it. Move a line to `shipped` when it lands. */

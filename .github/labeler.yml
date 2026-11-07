@@ -54,7 +54,6 @@
   - changed-files:
       - any-glob-to-any-file:
           - .github/**
-          - .coderabbit.yaml
 
 "area: deps":
   - changed-files:

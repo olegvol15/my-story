@@ -122,7 +122,6 @@ Workflow:
 3. Run `npm run check && npm run build`, then push and open the PR:
    `gh pr create --title "feat(projects): add changelog timeline" --body-file -` filling in `.github/pull_request_template.md`.
 4. Report the PR URL. Cloudflare posts a preview URL on the PR; check UI changes there.
-   CodeRabbit reviews every non-draft PR automatically (config in `.coderabbit.yaml`, which uses this file as its guidelines). Address or answer its comments; don't dismiss them silently. Add `wip` to the title to skip review.
 5. **Don't merge unless the user asks.** When asked: `gh pr merge --squash --delete-branch`.
 
 PR title format: `type(scope): summary`, lower-case, imperative, no trailing period.

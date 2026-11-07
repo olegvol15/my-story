@@ -100,17 +100,17 @@ Rules for content:
 - **Client JS is progressive enhancement only**: a small inline `<script>` in the component that needs it, and the page must still work without it (see the copy-email link in `Hero` and the form in `Subscribe`). No third-party scripts, analytics or embeds without asking first.
 - **Don't add runtime dependencies without asking.** Prefer a few lines in `src/lib/`.
 - Styles: use scoped `<style>` in the component. Use the tokens in `styles/tokens.css` (`--fg`, `--body`, `--muted`, `--hairline`, `--surface`, `--radius`, `--measure`, `--gutter`, `--ease-out`) instead of raw values; add a token rather than repeating a magic colour. Global CSS is only for base/prose/motion.
-- Elements created by scripts or `set:html` are unscoped. Reach them with `:global()` and leave a comment saying why (see `Hero`, `Milestones`).
+- Elements created by scripts or `set:html` are unscoped. Reach them with `:global()` (see `Hero`, `Milestones`). The code-block copy button from `layouts/Article.astro` is styled in `styles/prose.css` for the same reason.
 - Motion: entrances use the `data-reveal` attribute with a `--reveal-delay` style; homepage sections step by 80ms. Anything animated must respect `prefers-reduced-motion` (handled globally in `motion.css`, so don't override it).
 - Images: import or reference through the content schema `image()` and render with `astro:assets` `<Image>` with `widths` + `sizes`. Never put content images in `public/`.
 - Data shaping (sorting, filtering drafts, date formatting) lives in `src/lib/`. Pages and components call it and never re-implement it. Dates: `formatDate` / `toISODate` from `lib/posts.ts`, and always pair visible dates with `<time datetime>`.
 - Accessibility: one `<h1>` per page, sections labelled with `aria-labelledby`, visible focus states, links that open new tabs use `rel="noopener"`.
 - TypeScript is `astro/tsconfigs/strict`. Keep `npm run check` at 0 errors, 0 warnings, 0 hints.
-- Comments explain *why* (a constraint, a browser quirk), not what the code does.
+- **No comments anywhere in the project**: no `//`, `/* */`, `/** */`, `<!-- -->` or YAML `#` comments in code, styles, config or workflows. Names should carry the meaning; anything that truly needs explaining goes in this file or the PR description.
 
 ## CI/CD and deploy
 
-- **CI**: `.github/workflows/ci.yml` (job "Check and build") runs `npm ci`, `npm run check` and `npm run build` on every PR and every push to `main`. `.github/workflows/pr-labels.yml` validates the PR title (job "PR title") and applies labels.
+- **CI**: `.github/workflows/ci.yml` (job "Check and build") runs `npm ci`, `npm run check` and `npm run build` on every PR and every push to `main`. `.github/workflows/pr-labels.yml` validates the PR title (job "PR title") and applies labels. Both job names are required status checks in the `main` ruleset, so renaming either breaks merging. The "Area labels" job must keep `needs: title`: actions/labeler rewrites the whole label set, and running in parallel it drops the `type:` label.
 - **CD**: Cloudflare Pages project `my-story`, connected to GitHub `olegvol15/my-story`. It is configured in the Cloudflare dashboard, not in this repo. Build `npm run build`, output `dist`, env `NODE_VERSION=22`. A push to `main` **is a production deploy** to https://olehvolostnykh.com; other branches get preview URLs on `*.my-story-b38.pages.dev`.
 - `site` in `astro.config.mjs` (`https://olehvolostnykh.com`) drives canonical URLs, OG URLs and RSS links. Change it only if the domain changes.
 - DNS for the domain lives in Cloudflare (registrar is Porkbun, but its DNS panel does nothing). Keep the existing MX records and the single `v=spf1` TXT record: they carry email forwarding. Never add a second SPF record.

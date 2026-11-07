@@ -40,8 +40,6 @@ const { href, title, cover, coverAlt = "" } = Astro.props;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Portrait covers get cropped to 16:9 here; bias the window upward so faces
-     survive instead of being sliced off at the shoulders. */
   object-position: center 25%;
   transition:
     transform 0.4s ease,
@@ -54,7 +52,6 @@ const { href, title, cover, coverAlt = "" } = Astro.props;
   opacity: 1;
 }
 
-/* No cover: set the title in the display face so the tile still has a face. */
 .card-fallback {
   display: grid;
   place-items: center;

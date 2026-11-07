@@ -68,8 +68,6 @@ const panels = [
 )}
 
 <script>
-  // Lets /#projects (the back link from a project page) open the right panel,
-  // and keeps the URL in step with the switch so refresh and back work.
   const feed = document.querySelector<HTMLElement>(".feed");
   const radios = feed?.querySelectorAll<HTMLInputElement>('input[name="feed"]');
 
@@ -101,7 +99,6 @@ const panels = [
   margin: 0 0 1.75rem;
 }
 
-/* Segmented switch: two radios with a pill that slides under the checked one. */
 .switch {
   position: relative;
   display: inline-grid;
@@ -168,7 +165,6 @@ const panels = [
   gap: clamp(1.25rem, 3vw, 1.75rem);
 }
 
-/* Browsers without :has() simply show both lists one after the other. */
 .feed:has(#feed-writing:checked) [data-panel="projects"],
 .feed:has(#feed-projects:checked) [data-panel="writing"] {
   display: none;

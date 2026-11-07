@@ -1,6 +1,3 @@
-<!-- Title: type(scope): summary  e.g. feat(projects): add changelog timeline
-     It becomes the squash commit on main. Labels are applied automatically. -->
-
 ## What
 
 ## Why

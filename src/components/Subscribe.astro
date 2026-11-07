@@ -69,7 +69,6 @@ const configured = newsletter.action.length > 0;
       }, tone === "error" ? 6000 : 4500);
     };
 
-    // JS takes over, so the no-JS fallback of opening Kit's page is never used.
     form.removeAttribute("target");
 
     const label = button.textContent ?? "Subscribe";

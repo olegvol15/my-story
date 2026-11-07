@@ -51,6 +51,10 @@ jobs:
 
   areas:
     name: Area labels
+    # labeler rewrites the whole label set from a snapshot; run it after the title
+    # job or it races and drops the type: label. always(): still label bad titles.
+    needs: title
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

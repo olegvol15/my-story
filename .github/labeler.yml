@@ -7,7 +7,6 @@
           - src/content/writing/**
           - src/pages/writing/**
           - src/pages/rss.xml.ts
-          - src/components/WritingList.astro
           - src/lib/posts.ts
 
 "area: projects":
@@ -15,7 +14,6 @@
       - any-glob-to-any-file:
           - src/content/projects/**
           - src/pages/projects/**
-          - src/components/ProjectList.astro
           - src/lib/projects.ts
 
 "area: home":
@@ -48,7 +46,7 @@
           - src/styles/**
           - src/layouts/**
           - src/components/Card.astro
-          - src/components/CardSection.astro
+          - src/components/Feed.astro
 
 "area: ci":
   - changed-files:

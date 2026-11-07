@@ -28,8 +28,9 @@ src/
     Article.astro     detail page shell: back link, title, meta slot, cover, .prose body, "after" slot
   components/
     Hero, Milestones  homepage top
-    Card, CardSection shared card grid used by both Writing and Projects
-    WritingList, ProjectList   homepage sections (render nothing when their collection is empty)
+    Card              the card used by both Writing and Projects
+    Feed              homepage Writing/Projects switch (CSS-only radios + :has(); tiny script syncs #writing/#projects).
+                      Hides the switch and shows a plain heading when only one collection has entries.
     Subscribe         Kit newsletter form (see Newsletter below)
     BaseHead          all <head> metadata/SEO/OG: extend it, don't add <meta> elsewhere
   content/

@@ -4,8 +4,7 @@ import { profile } from "../data/content";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Milestones from "../components/Milestones.astro";
-import WritingList from "../components/WritingList.astro";
-import ProjectList from "../components/ProjectList.astro";
+import Feed from "../components/Feed.astro";
 import Subscribe from "../components/Subscribe.astro";
 
 const title = `${profile.name} - a 20 year old software engineer from Ukraine building stuff and writing about it`;
@@ -20,7 +19,6 @@ const title = `${profile.name} - a 20 year old software engineer from Ukraine bu
 >
   <Hero />
   <Milestones revealDelay="320ms" />
-  <WritingList revealDelay="400ms" />
-  <ProjectList revealDelay="480ms" />
-  <Subscribe revealDelay="560ms" />
+  <Feed revealDelay="400ms" />
+  <Subscribe revealDelay="480ms" />
 </Base>

@@ -6,6 +6,11 @@
   --hairline: rgba(255, 255, 255, 0.08);
   --surface: rgba(255, 255, 255, 0.03);
 
+  /* Work status, Jira-style: to do / in progress / done (also project "Live"). */
+  --tone-todo: #94a3b8;
+  --tone-progress: #60a5fa;
+  --tone-done: #4ade80;
+
   --measure: 44rem;
   --gutter: clamp(1.25rem, 5vw, 2rem);
   --radius: 12px;

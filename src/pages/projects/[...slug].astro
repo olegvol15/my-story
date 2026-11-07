@@ -86,8 +86,8 @@ const monthYear = (date: Date) =>
 }
 
 .status[data-status="live"]::before {
-  background: #4ade80;
-  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15);
+  background: var(--tone-done);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone-done) 15%, transparent);
 }
 
 .status[data-status="building"]::before {

@@ -15,6 +15,7 @@
           - src/content/projects/**
           - src/pages/projects/**
           - src/lib/projects.ts
+          - src/components/ProjectBoard.astro
 
 "area: home":
   - changed-files:

@@ -2,9 +2,10 @@
 import { render } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import { profile } from "../../data/content";
-import { formatDate, toISODate } from "../../lib/posts";
-import { getPublishedProjects, shippedLog, statusLabel } from "../../lib/projects";
+import { toISODate } from "../../lib/posts";
+import { getPublishedProjects, statusLabel } from "../../lib/projects";
 import Article from "../../layouts/Article.astro";
+import ProjectBoard from "../../components/ProjectBoard.astro";
 
 export const getStaticPaths = (async () => {
   const projects = await getPublishedProjects();
@@ -16,8 +17,7 @@ export const getStaticPaths = (async () => {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const { title, description, status, started, cover, coverAlt, stack, links, planned } = project.data;
-const shipped = shippedLog(project);
+const { title, description, status, started, cover, coverAlt, stack, links, tickets } = project.data;
 
 const monthYear = (date: Date) =>
   date.toLocaleDateString("en-US", { year: "numeric", month: "long" });
@@ -49,33 +49,10 @@ const monthYear = (date: Date) =>
 
   <Content />
 
-  {(planned.length > 0 || shipped.length > 0) && (
-    <section slot="after" class="changelog" aria-labelledby="changelog-heading" data-reveal style="--reveal-delay: 320ms">
-      <h2 id="changelog-heading">Changelog</h2>
-
-      {planned.length > 0 && (
-        <>
-          <h3>Up next</h3>
-          <ul class="log log-planned">
-            {planned.map((item) => <li><p>{item}</p></li>)}
-          </ul>
-        </>
-      )}
-
-      {shipped.length > 0 && (
-        <>
-          <h3>Shipped</h3>
-          <ol class="log">
-            {shipped.map((entry) => (
-              <li>
-                <time datetime={toISODate(entry.date)}>{formatDate(entry.date)}</time>
-                <p>{entry.text}</p>
-              </li>
-            ))}
-          </ol>
-        </>
-      )}
-    </section>
+  {tickets.length > 0 && (
+    <div slot="after" data-reveal style="--reveal-delay: 320ms">
+      <ProjectBoard project={project} />
+    </div>
   )}
 </Article>
 
@@ -139,74 +116,4 @@ const monthYear = (date: Date) =>
   color: var(--fg);
 }
 
-.changelog {
-  margin-top: clamp(3.5rem, 9vh, 5rem);
-  padding-top: 2.5rem;
-  border-top: 1px solid var(--hairline);
-}
-
-.changelog h2 {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--fg);
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-
-.changelog h3 {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  margin: 2rem 0 1rem;
-}
-
-/* A timeline: a hairline rail with a dot per entry. */
-.log {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-left: 1px solid var(--hairline);
-}
-
-.log li {
-  position: relative;
-  padding: 0 0 1.5rem 1.4rem;
-}
-
-.log li:last-child {
-  padding-bottom: 0;
-}
-
-.log li::before {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 0.55em;
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: var(--body);
-}
-
-.log-planned li::before {
-  background: var(--bg);
-  border: 1px solid var(--muted);
-}
-
-.log time {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
-.log p {
-  margin: 0;
-  color: var(--body);
-}
-
-.log-planned p {
-  color: var(--muted);
-}
 </style>

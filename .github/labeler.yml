@@ -1,0 +1,69 @@
+# Path-based "area:" labels, applied by .github/workflows/pr-labels.yml.
+# "type:" labels come from the PR title instead (see that workflow).
+
+"area: writing":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/content/writing/**
+          - src/pages/writing/**
+          - src/pages/rss.xml.ts
+          - src/components/WritingList.astro
+          - src/lib/posts.ts
+
+"area: projects":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/content/projects/**
+          - src/pages/projects/**
+          - src/components/ProjectList.astro
+          - src/lib/projects.ts
+
+"area: home":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/pages/index.astro
+          - src/components/Hero.astro
+          - src/components/Milestones.astro
+          - src/components/GlitchName.astro
+          - src/components/Particles.astro
+          - src/components/SocialIcon.astro
+          - src/assets/**
+          - src/data/content.ts
+
+"area: newsletter":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/components/Subscribe.astro
+
+"area: seo":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/components/BaseHead.astro
+          - public/**
+          - astro.config.mjs
+
+"area: design":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/styles/**
+          - src/layouts/**
+          - src/components/Card.astro
+          - src/components/CardSection.astro
+
+"area: ci":
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+
+"area: deps":
+  - changed-files:
+      - any-glob-to-any-file:
+          - package.json
+          - package-lock.json
+          - .nvmrc
+
+"area: agents":
+  - changed-files:
+      - any-glob-to-any-file:
+          - AGENTS.md
+          - CLAUDE.md

@@ -1,0 +1,59 @@
+# Labels every PR and enforces a conventional-commit title.
+# PRs are squash-merged with the PR title as the commit message, so the title
+# *is* the commit that lands on main - it has to follow the convention.
+name: PR labels
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: pr-labels-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  title:
+    name: PR title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check title and apply type label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const TYPES = ["feat", "fix", "content", "style", "refactor", "perf", "docs", "chore", "ci", "deps"];
+            const pr = context.payload.pull_request;
+            const match = /^(\w+)(?:\(([\w-]+)\))?!?: \S/.exec(pr.title);
+
+            if (!match || !TYPES.includes(match[1])) {
+              core.setFailed(
+                `PR title "${pr.title}" must look like "type(scope): summary" ` +
+                `where type is one of: ${TYPES.join(", ")}.`,
+              );
+              return;
+            }
+
+            const want = `type: ${match[1]}`;
+            const current = pr.labels.map((l) => l.name);
+            const stale = current.filter((n) => n.startsWith("type: ") && n !== want);
+            const issue = { owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number };
+
+            for (const name of stale) {
+              await github.rest.issues.removeLabel({ ...issue, name });
+            }
+            if (!current.includes(want)) {
+              await github.rest.issues.addLabels({ ...issue, labels: [want] });
+            }
+
+  areas:
+    name: Area labels
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          sync-labels: true

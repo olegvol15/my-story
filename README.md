@@ -1,95 +1,49 @@
-# olehvolostnykh.com
+# Oleh Volostnykh
 
-[![CI](https://github.com/olegvol15/my-story/actions/workflows/ci.yml/badge.svg)](https://github.com/olegvol15/my-story/actions/workflows/ci.yml)
+20 y/o software engineer with big dreams. Building products and documenting the journey.
 
-My personal site: who I am, what I'm writing, and what I'm building, with a public changelog for each project.
+I'm from Ukraine and live in Wrocław, Poland. I build web products end to end - React and TypeScript on the front, Node and Postgres behind it. My goal is to become a fully self-made solopreneur.
 
-**Live:** https://olehvolostnykh.com · **RSS:** [/rss.xml](https://olehvolostnykh.com/rss.xml)
+**Website:** [olehvolostnykh.com](https://olehvolostnykh.com)
 
-It's a fully static [Astro](https://astro.build) site with no UI framework and no client-side bundle. The few scripts it has (copy-email, the particle background, the subscribe toast) are small inline progressive enhancements. Keeping it that light is the main design constraint.
+## Experience
 
-## Stack
+**Frontend Developer Intern - Elladium Holding** · Dec 2025 - May 2026
+Six months on Xollo, remote. React, TypeScript, Zustand, TanStack Query, Tailwind. Built the reusable component layer that cut development time for new features by 25%, and reworked the API data flow to drop unnecessary requests by 40%.
 
-- **Astro 7**: static output, content collections, `astro:assets` image optimisation
-- **TypeScript** (strict), plain scoped CSS with design tokens
-- **Kit** for the newsletter (a plain HTML form POST, no embed script)
-- **Cloudflare Pages** for hosting and deploys, **GitHub Actions** for CI
+## Education
 
-## Getting started
+**B.S. Business Informatics - Wrocław University of Economics** · Jun 2026
+Web & Mobile Application Development. GPA 4.7 / 5.00. Thesis on AI coding assistants and the junior developer role, defended with the top grade.
 
-Requires Node 22 (see `.nvmrc`).
+**Software Development Diploma - IT-STEP Academy** · Apr 2026
+AI & Frontend Engineering. GPA 4.8 / 5.00. Done in parallel with the university degree; I finished the two within two months of each other.
 
-```sh
-npm ci
-npm run dev        # http://localhost:4321
-```
+## Projects
 
-| Command | Does |
-| --- | --- |
-| `npm run dev` | Dev server with hot reload |
-| `npm run check` | Type-check (`astro check`) |
-| `npm run build` | Production build to `dist/` |
-| `npm run preview` | Serve the production build locally |
+- **[tipun](https://github.com/olegvol15/tipun)** - a local, deterministic terminal coach that suggests cleaner, equivalent shell commands. No AI, no network. Written in Rust.
+- **[IdeaPick](https://github.com/olegvol15/ideapickapp)** - an AI platform that helps developers generate product ideas and pressure-test them before writing any code. Taken from idea to deploy in five weeks.
+- **LumiTune** - a full-stack music streaming platform with playback, playlists, search, albums, podcasts and a user library. Built solo as my thesis project.
 
-## Writing and projects
+## Milestones
 
-Content is Markdown in `src/content/`. Images live next to the file that uses them.
+- Started programming at 17
+- Moved countries and started two degrees in parallel at 18
+- Wrote my first commercial code at 19
+- Reached 1,000 followers on X building in public at 19
+- Reached 1500 elo on chess.com in blitz
+- Benched 225 and squatted 265 at 19
+- Speak four languages - English, Polish, Russian, Ukrainian
 
-**New post:** add `src/content/writing/<slug>.md`, which is published at `/writing/<slug>`.
+## Find me
 
-```yaml
----
-title: "The long way round"
-description: "Optional; falls back to an excerpt"
-date: 2026-08-22
-cover: "./cover.jpg"
-coverAlt: "What's in the photo"
----
-```
+[X](https://x.com/olegvolo15) ·
+[GitHub](https://github.com/olegvol15) ·
+[LinkedIn](https://linkedin.com/in/oleh-volostnykh) ·
+[Substack](https://substack.com/@olehvolostnykh) ·
+[Medium](https://medium.com/@olehvolostnykh15) ·
+[dev.to](https://dev.to/olehvolos) ·
+[Instagram](https://www.instagram.com/_volostnykh15_/) ·
+[TikTok](https://www.tiktok.com/@oleeg15)
 
-**New project:** add `src/content/projects/<slug>.md`, which is published at `/projects/<slug>`. The body is the description; the changelog lives in the frontmatter:
-
-```yaml
----
-title: "My project"
-description: "One line about it"
-status: building          # building | live | paused | archived
-started: 2026-09-01
-stack: [Astro, TypeScript]
-links:
-  - label: GitHub
-    href: https://github.com/olegvol15/...
-shipped:                  # rendered newest first
-  - date: 2026-11-07
-    text: What shipped
-planned:                  # move an item to `shipped` (with a date) when it lands
-  - What's next
----
-```
-
-Set `draft: true` on either to keep it out of the build. The full field list is in [`src/content.config.ts`](src/content.config.ts).
-
-## Project structure
-
-```text
-src/
-├── pages/          index, rss.xml, writing/[...slug], projects/[...slug]
-├── layouts/        Base (every page), Article (post and project pages)
-├── components/     Hero, Milestones, Card/CardSection, WritingList, ProjectList, Subscribe, BaseHead…
-├── content/        writing/ and projects/ Markdown + images
-├── lib/            sorting, filtering and date helpers
-├── data/           profile, links, milestones, newsletter config
-└── styles/         tokens, base, motion, prose
-```
-
-## Workflow and deploys
-
-`main` is protected: every change goes through a pull request.
-
-1. Branch from `main`, e.g. `feat/project-timeline` or `content/new-post`.
-2. Open a PR titled as a conventional commit: `type(scope): summary`, e.g. `content(writing): add post about moving`.
-3. CI type-checks and builds; the PR is labelled automatically (`type:` from the title, `area:` from the changed files). Cloudflare comments with a preview URL.
-4. Squash-merge. The PR title becomes the commit on `main`, and Cloudflare Pages deploys it to production.
-
-Coding conventions, content rules and the full PR guide are in [`AGENTS.md`](AGENTS.md) (also read by AI coding agents via `CLAUDE.md`).
-
+Email: [olehvolostnykh15@gmail.com](mailto:olehvolostnykh15@gmail.com)

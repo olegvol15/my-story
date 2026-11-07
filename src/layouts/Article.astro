@@ -46,6 +46,11 @@ const { heading, backHref = "/", cover, coverAlt = "", ...head } = Astro.props;
 <script>
   // Copy buttons on code blocks. Without JS (or clipboard access) the blocks
   // are still plain, selectable code.
+  const svg = (paths: string) =>
+    `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+  const copyIcon = svg('<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>');
+  const doneIcon = svg('<path d="M20 6 9 17l-5-5"/>');
+
   if (navigator.clipboard) {
     for (const pre of document.querySelectorAll<HTMLPreElement>(".prose pre")) {
       const wrap = document.createElement("div");
@@ -56,18 +61,27 @@ const { heading, backHref = "/", cover, coverAlt = "", ...head } = Astro.props;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "copy";
-      btn.textContent = "Copy";
-      btn.setAttribute("aria-label", "Copy code to clipboard");
+      const reset = () => {
+        btn.innerHTML = copyIcon;
+        btn.setAttribute("aria-label", "Copy code");
+        btn.title = "Copy";
+        delete btn.dataset.state;
+      };
+      reset();
       let timer = 0;
       btn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText((pre.innerText || "").trimEnd());
-          btn.textContent = "Copied";
+          btn.innerHTML = doneIcon;
+          btn.setAttribute("aria-label", "Copied");
+          btn.title = "Copied";
+          btn.dataset.state = "copied";
         } catch {
-          btn.textContent = "Select and copy";
+          btn.setAttribute("aria-label", "Copy failed - select the code and copy it");
+          btn.title = "Copy failed";
         }
         window.clearTimeout(timer);
-        timer = window.setTimeout(() => (btn.textContent = "Copy"), 2000);
+        timer = window.setTimeout(reset, 2000);
       });
       wrap.append(btn);
     }

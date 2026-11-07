@@ -43,6 +43,37 @@ const { heading, backHref = "/", cover, coverAlt = "", ...head } = Astro.props;
   <slot name="after" />
 </Base>
 
+<script>
+  // Copy buttons on code blocks. Without JS (or clipboard access) the blocks
+  // are still plain, selectable code.
+  if (navigator.clipboard) {
+    for (const pre of document.querySelectorAll<HTMLPreElement>(".prose pre")) {
+      const wrap = document.createElement("div");
+      wrap.className = "code-block";
+      pre.replaceWith(wrap);
+      wrap.append(pre);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "copy";
+      btn.textContent = "Copy";
+      btn.setAttribute("aria-label", "Copy code to clipboard");
+      let timer = 0;
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText((pre.innerText || "").trimEnd());
+          btn.textContent = "Copied";
+        } catch {
+          btn.textContent = "Select and copy";
+        }
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => (btn.textContent = "Copy"), 2000);
+      });
+      wrap.append(btn);
+    }
+  }
+</script>
+
 <style>
 .back {
   display: inline-block;

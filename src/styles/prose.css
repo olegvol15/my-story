@@ -94,3 +94,37 @@
   margin-left: 0;
   color: var(--muted);
 }
+
+/* Wrapper and button are created by the copy script in layouts/Article.astro,
+   so they are styled here (global) rather than in that component. */
+.prose .code-block {
+  position: relative;
+}
+
+.prose .code-block pre {
+  padding-right: 5.5rem;
+}
+
+.prose .copy {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  translate: 0 -50%;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.prose .copy:hover {
+  color: var(--fg);
+  border-color: rgba(255, 255, 255, 0.2);
+}

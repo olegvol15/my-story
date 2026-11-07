@@ -1,6 +1,6 @@
 ---
 title: "tipun"
-description: "A local, deterministic terminal coach that suggests cleaner, equivalent shell commands. No AI, no network."
+description: "A deterministic terminal coach that suggests cleaner, equivalent shell commands. No AI."
 status: live
 started: 2026-10-13
 stack: [Rust, clap, zsh]
@@ -53,7 +53,7 @@ tickets:
 tipun watches the commands you run and occasionally suggests a cleaner way to write the same one:
 `cat app.log | grep ERROR` becomes `grep ERROR app.log`.
 
-It runs entirely on your machine, with no AI, network or telemetry. Suggestions come from parsing the command, not from guessing, and it only speaks up when it is sure the rewrite behaves the same. A missed tip is fine; a wrong one is not.
+It uses no AI. Suggestions come from parsing the command, not from guessing, and it only speaks up when it is sure the rewrite behaves the same. A missed tip is fine; a wrong one is not.
 
 It works in zsh today. Install it with one line:
 

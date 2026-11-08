@@ -3,6 +3,7 @@ title: "tipun"
 description: "A deterministic terminal coach that suggests cleaner, equivalent shell commands. No AI."
 status: live
 started: 2026-10-13
+logo: "./tipun-logo.svg"
 stack: [Rust, clap, zsh]
 links:
   - label: GitHub

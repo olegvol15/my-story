@@ -25,6 +25,7 @@ const projects = defineCollection({
       started: z.coerce.date(),
       cover: image().optional(),
       coverAlt: z.string().default(""),
+      logo: image().optional(),
       stack: z.array(z.string()).default([]),
       links: z.array(z.object({ label: z.string(), href: z.url() })).default([]),
       key: z.string().regex(/^[A-Z][A-Z0-9]{1,5}$/).optional(),

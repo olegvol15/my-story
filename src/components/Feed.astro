@@ -53,10 +53,10 @@ const panels = [
     {projects.length > 0 && (
       <div class="cards" id="projects" data-panel="projects" aria-label="Projects">
         {projects.map((project) => {
-          const { title, cover, coverAlt, status } = project.data;
+          const { title, cover, coverAlt, logo, status } = project.data;
           const updated = lastActivity(project);
           return (
-            <Card href={`/projects/${project.id}`} title={title} cover={cover} coverAlt={coverAlt}>
+            <Card href={`/projects/${project.id}`} title={title} cover={cover} coverAlt={coverAlt} logo={logo}>
               {statusLabel[status]} · updated{" "}
               <time datetime={toISODate(updated)}>{formatDate(updated)}</time>
             </Card>

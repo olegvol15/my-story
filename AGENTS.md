@@ -68,6 +68,7 @@ status: building        # building | live | paused | archived
 started: 2026-01-15
 cover: "./shot.png"     # optional; cards fall back to the title in the display font
 coverAlt: "..."
+logo: "./logo.svg"     # optional; shown centred on the card when there is no cover
 stack: [Astro, TypeScript]
 links:
   - label: GitHub
